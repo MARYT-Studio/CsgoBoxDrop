@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 
 public class PacketUpdateMode {
 
-    public long seed;
     public int mode;
     public PacketUpdateMode(FriendlyByteBuf buf) {
         mode=buf.readInt();
@@ -19,11 +18,6 @@ public class PacketUpdateMode {
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(mode);
     }
-
-    public PacketUpdateMode(int mode) {
-        this.mode=mode;
-    }
-
 
 
     public void handle(Supplier<NetworkEvent.Context> ctx) {

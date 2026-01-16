@@ -36,8 +36,6 @@ public class ModItems {
                 entries.accept(ModItems.ITEM_CSGO_KEY2.get());
                 entries.accept(ModItems.ITEM_CSGO_KEY3.get());
 
-                //entries.accept(ModItems.ITEM_CSGO_TEST.get());
-
                 for (ItemCsgoBox.BoxInfo info : CsgoBoxManage.BOX) {
                     ItemStack stack = new ItemStack(ModItems.ITEM_CSGOBOX.get());
                     ItemCsgoBox.setBoxInfo(info, stack);

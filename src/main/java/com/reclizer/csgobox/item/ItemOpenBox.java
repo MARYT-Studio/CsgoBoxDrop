@@ -1,6 +1,5 @@
 package com.reclizer.csgobox.item;
 
-
 import com.reclizer.csgobox.gui.CsgoBoxCraftMenu;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
@@ -21,57 +20,41 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.network.NetworkHooks;
-
-import static com.reclizer.csgobox.utils.ItemNBT.isModLoaded;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemOpenBox extends Item {
     public ItemOpenBox() {
         super(new Properties().stacksTo(1).rarity(Rarity.EPIC));
     }
 
-
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player entity, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player entity, @NotNull InteractionHand hand) {
         InteractionResultHolder<ItemStack> ar = super.use(world, entity, hand);
 
         if(world.isClientSide){
             return ar;
         }
-
-
-        //System.out.println(isModLoaded("crafttweaker"));
-
         execute(world, entity.getX(), entity.getY(), entity.getZ(), entity);
-
         return ar;
     }
 
-
-
-
-
-    public static void execute(LevelAccessor world, double x, double y, double z, Entity entity) {
+    public static void execute(LevelAccessor ignored, double x, double y, double z, Entity entity) {
         if (entity == null)
             return;
         if (entity instanceof ServerPlayer _ent) {
             BlockPos pos = BlockPos.containing(x, y, z);
-            NetworkHooks.openScreen((ServerPlayer) _ent, new MenuProvider() {
+            NetworkHooks.openScreen(_ent, new MenuProvider() {
 
                 @Override
-                public Component getDisplayName() {
+                public @NotNull Component getDisplayName() {
                     return Component.literal("csgo_box_craft");
                 }
 
                 @Override
-                public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+                public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
                     return new CsgoBoxCraftMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
 
                 }
-
-
-
-
-
             }, pos);
         }
     }

@@ -9,8 +9,6 @@ import javax.annotation.Nullable;
 public class CsboxCap  implements ICsboxCap{
 
 
-    private final LivingEntity livingEntity;
-
     private long playSeed;
 
     private int mode;
@@ -18,8 +16,7 @@ public class CsboxCap  implements ICsboxCap{
     private String item;
 
     private int grade;
-    public CsboxCap(@Nullable final LivingEntity entity) {
-        this.livingEntity = entity;
+    public CsboxCap(@Nullable final LivingEntity ignored) {
     }
 
     @Override

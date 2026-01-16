@@ -338,15 +338,7 @@ public class CsboxScreen extends Screen {
     }
     public int boxKeyCount;
     public int isBoxKey(){
-        int i=0;
-        for (ItemStack stack : entity.getInventory().items) {
-
-            if (Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString().equals(ItemCsgoBox.getKey(itemMenu)) ) {
-                i=stack.getCount();
-                return i;
-            }
-        }
-        return i;
+        return 32767;
     }
 
 
@@ -417,27 +409,16 @@ public class CsboxScreen extends Screen {
     public void init() {
         super.init();
         imagebutton_open_box = new ImageButton(this.width*67/100, this.height*94/100, this.width*4/100, this.height*5/100, 0, 0, 64, new ResourceLocation("csgobox:textures/screens/atlas/open_box.png"), 82, 128, e -> {
-
-            //ItemCsgoBox box=(ItemCsgoBox) itemMenu.getItem();
-            ;
-
-            if(ItemCsgoBox.getKey(itemMenu)!=null&&entity.getMainHandItem().getItem() instanceof ItemCsgoBox){
-
-                for (ItemStack stack : entity.getInventory().items) {
-                    if (Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString().equals(ItemCsgoBox.getKey(itemMenu)) ) {
-                        //stack.shrink(1);
-                        Minecraft.getInstance().setScreen(new CsboxProgressScreen());
-                        Networking.INSTANCE.sendToServer(new PacketCsgoProgress( 2,ItemCsgoBox.getKey(itemMenu)));
-                    }
-                }
-                //Minecraft.getInstance().setScreen(new CsboxProgressScreen());
-
-            }else {
-                //Minecraft.getInstance().setScreen(new CsboxProgressScreen());
-                //System.out.println("没有钥匙");
-                //Networking.INSTANCE.sendToServer(new PacketCsgoProgress( 1));
-            }
-
+            if(ItemCsgoBox.getKey(itemMenu)!=null && entity.getMainHandItem().getItem() instanceof ItemCsgoBox){
+//                for (ItemStack stack : entity.getInventory().items) {
+//                    if (Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString().equals(ItemCsgoBox.getKey(itemMenu)) ) {
+//                        Minecraft.getInstance().setScreen(new CsboxProgressScreen());
+//                        Networking.INSTANCE.sendToServer(new PacketCsgoProgress(2, ItemCsgoBox.getKey(itemMenu)));
+//                    }
+//                }
+                Minecraft.getInstance().setScreen(new CsboxProgressScreen());
+                Networking.INSTANCE.sendToServer(new PacketCsgoProgress(2, ItemCsgoBox.getKey(itemMenu)));
+             }
         });
         //guistate.put("button:imagebutton_open_box", imagebutton_open_box);
         this.addRenderableWidget(imagebutton_open_box);

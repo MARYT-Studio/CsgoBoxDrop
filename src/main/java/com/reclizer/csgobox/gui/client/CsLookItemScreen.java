@@ -158,9 +158,9 @@ public class CsLookItemScreen extends Screen {
         if(iCsboxCap==null){return;}
 
         ItemStack itemStack= ItemNBT.getStacks(iCsboxCap.getItem());
-        if(!itemStack.isEmpty()){
-            openItem=itemStack;
-            grade=iCsboxCap.getGrade();
+        if (itemStack != null && !itemStack.isEmpty()) {
+            openItem = itemStack;
+            grade = iCsboxCap.getGrade();
         }
         openSwitch=false;
     }
@@ -196,11 +196,14 @@ public class CsLookItemScreen extends Screen {
     public void init() {
         super.init();
         imagebutton_back_box = new ImageButton(this.width*72/100, this.height*94/100, this.width*4/100, this.height*5/100, 0, 0, 64, new ResourceLocation("csgobox:textures/screens/atlas/back_box.png"), 82, 128, e -> {
-            this.minecraft.player.closeContainer();
+            if (this.minecraft != null) {
+                if (this.minecraft.player != null) {
+                    this.minecraft.player.closeContainer();
+                }
+            }
             BlurHandler.updateShader(true);
             this.minecraft.options.hideGui=false;
         });
-        //guistate.put("button:imagebutton_back_box", imagebutton_back_box);
         this.addRenderableWidget(imagebutton_back_box);
 
     }
