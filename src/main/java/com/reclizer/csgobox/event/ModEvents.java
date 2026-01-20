@@ -1,61 +1,119 @@
 package com.reclizer.csgobox.event;
 
 import com.reclizer.csgobox.CsgoBox;
-import com.reclizer.csgobox.config.CsgoBoxManage;
 
 
 import com.reclizer.csgobox.item.ItemCsgoBox;
 import com.reclizer.csgobox.item.ModItems;
-import com.reclizer.csgobox.utils.BlurHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Collection;
+import java.util.Objects;
 import java.util.Random;
 
-import static net.minecraft.world.entity.MobType.UNDEAD;
+import static com.reclizer.csgobox.utils.ItemNBT.getStacksData;
 
 @Mod.EventBusSubscriber(modid = CsgoBox.MODID)
 public class ModEvents {
 
-
     @SubscribeEvent
-    public static void LivingDeadEvents(LivingDeathEvent event) {
-        LivingEntity mob=event.getEntity();
-        String entityType=ForgeRegistries.ENTITY_TYPES.getKey(event.getEntity().getType()).toString();
+    public static void LivingDropEvents(LivingDropsEvent event) {
+        Entity killer = event.getSource().getEntity();
+        if(!(killer instanceof Player)) return;
 
-        if(CsgoBoxManage.BOX==null){
-            return;
+        Player player;
+        player = (Player) killer;
+
+        Collection<ItemEntity> drops = event.getDrops();
+
+        LivingEntity entity = event.getEntity();
+        EntityType<?> entityType = entity.getType();
+        TagKey<EntityType<?>> bossTag = TagKey.create(Registries.ENTITY_TYPE, Objects.requireNonNull(ResourceLocation.tryParse("forge:bosses")));
+        boolean bossFlag = entityType.is(bossTag);
+
+        // Init
+        if (!(player.getPersistentData().contains("probability"))) {
+            player.getPersistentData().putDouble("probability", 0.4D);
+        }
+        if (player.getPersistentData().getDouble("probability") > 0.7D) {
+            player.getPersistentData().putDouble("probability", 0.7D);
         }
 
-            for (ItemCsgoBox.BoxInfo info : CsgoBoxManage.BOX) {
-                if(info.dropEntity==null){
-                    return;
-                }
-                if(info.dropRandom>0){
-                    Random random = new Random();
 
-                    if(info.dropRandom>(1.00F-random.nextFloat(1))&&info.dropEntity!=null&&info.dropEntity.contains(entityType)){
-                        ItemStack stack = new ItemStack(ModItems.ITEM_CSGOBOX.get());
-                        ItemCsgoBox.setBoxInfo(info, stack);
-                        mob.spawnAtLocation(stack);
-                    }
-                }
-            }
+        // Time refreshing
+        // 80000 secs makes it merely one day but not precisely, creating a fake random
+        long time = Math.floorMod(System.currentTimeMillis(), 80000000);
+        if (!(player.getPersistentData().contains("timestamp"))) {
+            player.getPersistentData().putLong("timestamp", time);
+        } else if (time < player.getPersistentData().getLong("timeStamp")) {
+            player.getPersistentData().putDouble("probability", 0.4D);
+            player.getPersistentData().putLong("timestamp", time);
+        }
+
+        double probability = player.getPersistentData().getDouble("probability");
+
+        if (player.getRandom().nextDouble() < (bossFlag ? 0.6D: probability)) {
+            ItemStack box = new ItemStack(ModItems.ITEM_CSGOBOX.get());
+            ItemCsgoBox.setBoxInfo(generateBoxInfo(bossFlag, drops), box);
+            entity.spawnAtLocation(box);
+            player.getPersistentData().putDouble("probability", bossFlag ? probability * 0.9D : probability * 0.5D);
+        } else {
+            player.getPersistentData().putDouble("probability", bossFlag ? probability * 1.2D : probability * 1.05D);
+        }
     }
 
 
+    private static ItemCsgoBox.BoxInfo generateBoxInfo(boolean bossFlag, Collection<ItemEntity> drops) {
+        return ItemCsgoBox.BoxInfo.deserializeNBT(itemToTag(bossFlag, drops));
+    }
 
+    private static CompoundTag itemToTag(boolean bossFlag, Collection<ItemEntity> drops) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("name", "Newbie Chest");
+        tag.putString("key", "newbie_chest");
+        tag.putFloat("drop",114514);
+        tag.putIntArray("random", new int[]{1,9, 19, 8, 10});
 
-
+        ListTag grade1Tag = new ListTag();
+        ListTag grade2Tag = new ListTag();
+        ListTag grade3Tag = new ListTag();
+        ListTag grade4Tag = new ListTag();
+        ListTag grade5Tag = new ListTag();
+        for (ItemEntity itemEntity: drops.stream().toList()) {
+            ItemStack item = itemEntity.getItem();
+            int count = item.getCount();
+            if (bossFlag && count > 5) item.setCount((int) Math.floor(1 + new Random().nextFloat(4f)));
+            String itemData = getStacksData(item);
+            if (itemData == null) continue;
+            switch (item.getRarity().ordinal()) {
+                case 0: grade1Tag.add(StringTag.valueOf(itemData));
+                case 1: grade2Tag.add(StringTag.valueOf(itemData));
+                case 2: grade3Tag.add(StringTag.valueOf(itemData));
+                case 3: grade4Tag.add(StringTag.valueOf(itemData));
+                case 4: grade5Tag.add(StringTag.valueOf(itemData));
+                default: grade1Tag.add(StringTag.valueOf(itemData));
+            }
+            tag.put("grade1", grade1Tag);
+            tag.put("grade2", grade2Tag);
+            tag.put("grade3", grade3Tag);
+            tag.put("grade4", grade4Tag);
+            tag.put("grade5", grade5Tag);
+        }
+        return tag;
+    }
 
 }

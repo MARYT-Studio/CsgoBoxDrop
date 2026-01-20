@@ -141,6 +141,10 @@ repositories {
     //     dir 'libs'
     // }
     maven {
+            name = "Illusive Soulworks maven"
+            url = "https://maven.theillusivec4.top/"
+    }
+    maven {
         url = 'https://maven.blamejared.com'
         name = 'BlameJared Maven'
     }
@@ -153,6 +157,12 @@ repositories {
     }
     maven {
         url = "https://www.cursemaven.com"
+    }
+    maven {
+        url "https://maven.shadowsoffire.dev/releases"
+        content {
+            includeGroup "dev.shadowsoffire"
+        }
     }
 }
 
@@ -167,9 +177,14 @@ dependencies {
     //compileOnly fg.deobf("mezz.jei:jei-1.20.1-forge-api:${jei_version}")
     //runtimeOnly fg.deobf("mezz.jei:jei-1.20.1-forge:${jei_version}")
 
+    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
-    compileOnly(fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:[14.0.20]'))
-    runtimeOnly(fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:[14.0.20]'))
+    runtimeOnly fg.deobf("curse.maven:curse-of-pandora-968311:6428103")
+    runtimeOnly fg.deobf("curse.maven:l2library-620203:6806000")
+    runtimeOnly fg.deobf("curse.maven:l2-complements-758349:6939786")
+
+    compileOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:[14.0.20]')
+    runtimeOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:[14.0.20]')
 
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings

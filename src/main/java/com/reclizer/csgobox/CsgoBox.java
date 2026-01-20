@@ -12,7 +12,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -48,18 +47,11 @@ public class CsgoBox {
 
     public CsgoBox() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        // Register the commonSetup method for modloading
-
         modEventBus.addListener(this::commonSetup);
         ModSounds.SOUNDS.register(modEventBus);
         RecModMenus.register(modEventBus);
         ModItems.register(modEventBus);
         ModItems.registerTab(modEventBus);
-
-
-
-        // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -76,7 +68,7 @@ public class CsgoBox {
                     "  {\n" +
                     "    \"name\": \"Weapons Supply Box\",\n" +
                     "    \"key\": \"csgobox:csgo_key0\",\n" +
-                    "    \"drop\": 0.12,\n" +
+                    "    \"drop\": 0,\n" +
                     "    \"random\": [\n" +
                     "      2,\n" +
                     "      5,\n" +
@@ -142,11 +134,7 @@ public class CsgoBox {
                 e.printStackTrace();
             }
         });
-        // Some common setup code
         Networking.registerMessages();
-        // Some common setup code
-        LOGGER.info("HELLO FROM COMMON SETUP");
-        LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

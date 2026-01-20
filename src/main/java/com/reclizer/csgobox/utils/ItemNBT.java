@@ -2,11 +2,10 @@ package com.reclizer.csgobox.utils;
 
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Map;
 
 public class ItemNBT {
     public static String readTags(ItemStack stack){
@@ -30,7 +29,7 @@ public class ItemNBT {
         return itemDate;
     }
 
-    public static String tagsItemDate(String itemDate){
+    public static String tagsItemData(String itemDate){
         if(!itemDate.contains(".withTags")){
             return null;
         }
@@ -45,56 +44,55 @@ public class ItemNBT {
 
 
 
-    public static  String getStacksData(ItemStack stack){
-
+    public static String getStacksData(ItemStack stack){
         if(stack.isEmpty()){
             return null;
         }
-        String data=ForgeRegistries.ITEMS.getKey(stack.getItem()).toString();
-        if(stack.getTag()!=null){
+        ResourceLocation rl = ForgeRegistries.ITEMS.getKey(stack.getItem());
+        if (rl == null) return null;
+        String data = rl.toString();
+        if(stack.getTag() != null){
             String tag=ItemNBT.readTags(stack);
             data=data+".withTags"+tag;
-
-        }
+        } else if (stack.getCount() > 1) data += ("*" + stack.getCount());
         return data;
     }
-    public static ItemStack getStacks(String itemDate){
+    public static ItemStack getStacks(String itemData){
 
-        String itemName=itemDate;
+        String[] itemString = itemData.split("\\*");
+        int amount = 1;
+        if (itemString.length > 1) {
+            try {
+                amount = Integer.parseInt(itemString[1]);
+            } catch (NumberFormatException ignored) {}
+        }
 
+        String itemName = itemString[0];
+        String itemTags = null;
 
-
-        String itemTags=null;
-
-
-
-
-        if(itemDate.contains(".withTags")){
-            itemName=ItemNBT.tagsItemName(itemDate);
-            itemTags=ItemNBT.tagsItemDate(itemDate);
-
+        if(itemData.contains(".withTags")){
+            itemName=ItemNBT.tagsItemName(itemData);
+            itemTags=ItemNBT.tagsItemData(itemData);
         }
 
         ResourceLocation res=new ResourceLocation(itemName);
         if(ForgeRegistries.ITEMS.getValue(res)==null){
             return null;
         }
-        ItemStack stack1=new ItemStack(ForgeRegistries.ITEMS.getValue(res));
+
+        Item item = ForgeRegistries.ITEMS.getValue(res);
+        if (item == null) return null;
+        ItemStack stack1=new ItemStack(item);
+
+        stack1.setCount(amount);
         if(!isModLoaded("crafttweaker")){
             return stack1;
         }
 
-        if(itemTags!=null&&itemTags.contains("{")){
-
-
+        if(itemTags != null && itemTags.contains("{")) {
             CraftWeakerNBT.setTags(stack1, itemTags);
-
-
         }
-
-
         return stack1;
-
     }
 
 

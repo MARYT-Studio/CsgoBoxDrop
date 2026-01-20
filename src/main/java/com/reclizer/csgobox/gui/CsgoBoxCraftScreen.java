@@ -185,7 +185,6 @@ public class CsgoBoxCraftScreen extends AbstractContainerScreen<CsgoBoxCraftMenu
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
-                //System.out.println(boxName.getValue());
             }
 
         }).bounds(this.leftPos + 146, this.topPos + 31, 35, 20).build();

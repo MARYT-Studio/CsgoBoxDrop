@@ -57,21 +57,6 @@ public class CsgoBoxManage {
 
 
     public static void updateBoxJson(String name, List<String> item,List<Integer> grade)throws IOException {
-        // 读取原始的 JSON 数据
-//        File file = CONFIG_FILE.toFile();
-//        InputStream stream = null;
-//        if (Files.exists(CONFIG_FILE)) {
-//            stream = Files.newInputStream(file.toPath());
-//        } else {
-//            ResourceLocation res = new ResourceLocation(CsgoBox.MODID, "box.json");
-//            Optional<Resource> optional = Minecraft.getInstance().getResourceManager().getResource(res);
-//            if (optional.isPresent()) {
-//                stream = optional.get().open();
-//            }
-//        }
-        //JsonArray jsonArray=GSON.fromJso
-
-
         JsonArray jsonArray = readJsonFile(CONFIG_FILE);
         //"random": [2, 5, 6,20, 625],
         // 创建新的 JSON 对象
@@ -99,7 +84,7 @@ public class CsgoBoxManage {
         JsonArray jsonArray4=new JsonArray();
         JsonArray jsonArray5=new JsonArray();
 
-        if(item.size()>0){
+        if(!item.isEmpty()){
             for (int i=0;i<item.size();i++){
                 switch (grade.get(i)) {
                     case 1 -> jsonArray1.add(item.get(i));
