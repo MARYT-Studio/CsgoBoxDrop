@@ -1,6 +1,5 @@
 package com.reclizer.csgobox;
 
-import com.mojang.logging.LogUtils;
 import com.reclizer.csgobox.gui.RecModScreens;
 import com.reclizer.csgobox.sounds.ModSounds;
 import com.reclizer.csgobox.config.CsgoBoxManage;
@@ -8,10 +7,8 @@ import com.reclizer.csgobox.gui.RecModMenus;
 import com.reclizer.csgobox.item.ModItems;
 import com.reclizer.csgobox.packet.Networking;
 
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
+import com.reclizer.csgobox.utils.random_pickers.RandomCurioPicker;
+import com.reclizer.csgobox.utils.random_pickers.RandomFoodPicker;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,9 +18,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.slf4j.Logger;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -35,15 +29,6 @@ public class CsgoBox {
 
     // Define mod id in a common place for everything to reference
     public static final String MODID = "csgobox";
-    // Directly reference a slf4j logger
-    //public static IProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
-    private static final Logger LOGGER = LogUtils.getLogger();
-    // Create a Deferred Register to hold Blocks which will all be registered under the "csgobox" namespace
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    // Create a Deferred Register to hold Items which will all be registered under the "csgobox" namespace
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public CsgoBox() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -53,10 +38,11 @@ public class CsgoBox {
         ModItems.register(modEventBus);
         ModItems.registerTab(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(RandomCurioPicker.class);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-
+        // 生成默认配置文件
         Path configPath = FMLPaths.CONFIGDIR.get(); // 获取Minecraft配置目录
         Path folderPath = configPath.resolve("csbox");
         try {
@@ -126,6 +112,9 @@ public class CsgoBox {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // 随机查找表缓存
+        event.enqueueWork(RandomFoodPicker::initFoodCache);
 
         event.enqueueWork(() -> {
             try {

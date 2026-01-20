@@ -5,12 +5,15 @@ import com.reclizer.csgobox.CsgoBox;
 
 import com.reclizer.csgobox.item.ItemCsgoBox;
 import com.reclizer.csgobox.item.ModItems;
+import com.reclizer.csgobox.utils.random_pickers.RandomCurioPicker;
+import com.reclizer.csgobox.utils.random_pickers.RandomFoodPicker;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,6 +40,7 @@ public class ModEvents {
 
         Player player;
         player = (Player) killer;
+        if (player.level().isClientSide()) return;
 
         Collection<ItemEntity> drops = event.getDrops();
 
@@ -49,6 +53,8 @@ public class ModEvents {
         if (!(player.getPersistentData().contains("probability"))) {
             player.getPersistentData().putDouble("probability", 0.4D);
         }
+
+        // 不让掉落率太高
         if (player.getPersistentData().getDouble("probability") > 0.7D) {
             player.getPersistentData().putDouble("probability", 0.7D);
         }
@@ -60,6 +66,7 @@ public class ModEvents {
         if (!(player.getPersistentData().contains("timestamp"))) {
             player.getPersistentData().putLong("timestamp", time);
         } else if (time < player.getPersistentData().getLong("timeStamp")) {
+            // 按时重置
             player.getPersistentData().putDouble("probability", 0.4D);
             player.getPersistentData().putLong("timestamp", time);
         }
@@ -68,20 +75,23 @@ public class ModEvents {
 
         if (player.getRandom().nextDouble() < (bossFlag ? 0.6D: probability)) {
             ItemStack box = new ItemStack(ModItems.ITEM_CSGOBOX.get());
-            ItemCsgoBox.setBoxInfo(generateBoxInfo(bossFlag, drops), box);
+            ItemCsgoBox.setBoxInfo(generateBoxInfo(bossFlag, drops, probability, player.getRandom()), box);
             entity.spawnAtLocation(box);
+
+            // 掉落了箱子会导致掉落率下降
             player.getPersistentData().putDouble("probability", bossFlag ? probability * 0.9D : probability * 0.5D);
         } else {
+            // 如果打怪没有掉落箱子，给予一定量概率补偿
             player.getPersistentData().putDouble("probability", bossFlag ? probability * 1.2D : probability * 1.05D);
         }
     }
 
 
-    private static ItemCsgoBox.BoxInfo generateBoxInfo(boolean bossFlag, Collection<ItemEntity> drops) {
-        return ItemCsgoBox.BoxInfo.deserializeNBT(itemToTag(bossFlag, drops));
+    private static ItemCsgoBox.BoxInfo generateBoxInfo(boolean bossFlag, Collection<ItemEntity> drops, double probability, RandomSource random) {
+        return ItemCsgoBox.BoxInfo.deserializeNBT(itemToTag(bossFlag, drops, probability, random));
     }
 
-    private static CompoundTag itemToTag(boolean bossFlag, Collection<ItemEntity> drops) {
+    private static CompoundTag itemToTag(boolean bossFlag, Collection<ItemEntity> drops, double probability, RandomSource random) {
         CompoundTag tag = new CompoundTag();
         tag.putString("name", "Newbie Chest");
         tag.putString("key", "newbie_chest");
@@ -107,12 +117,83 @@ public class ModEvents {
                 case 4: grade5Tag.add(StringTag.valueOf(itemData));
                 default: grade1Tag.add(StringTag.valueOf(itemData));
             }
-            tag.put("grade1", grade1Tag);
-            tag.put("grade2", grade2Tag);
-            tag.put("grade3", grade3Tag);
-            tag.put("grade4", grade4Tag);
-            tag.put("grade5", grade5Tag);
         }
+
+        // 额外的奖励，玩家在箱子概率越低的时候获得的箱子开出好东西的几率越高
+        // 这个概率会随着额外奖励的出货情况改变
+        double extraProbability = 1 - probability;
+
+        for(int i = 0; i < 5; i++) {
+            if (random.nextFloat() < extraProbability) {
+                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
+                ItemStack food = RandomFoodPicker.randomFoodStack(random);
+                if (food == null) food = curios;
+                if (curios == null) break;
+                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
+                if (data == null) continue;
+                grade1Tag.add(StringTag.valueOf(data));
+                extraProbability *= 0.8;
+                break;
+            } else extraProbability += 0.05;
+        }
+        for(int i = 0; i < 5; i++) {
+            if (random.nextFloat() < extraProbability) {
+                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
+                ItemStack food = RandomFoodPicker.randomFoodStack(random);
+                if (food == null) food = curios;
+                if (curios == null) break;
+                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
+                if (data == null) continue;
+                grade2Tag.add(StringTag.valueOf(data));
+                extraProbability *= 0.8;
+                break;
+            } else extraProbability += 0.05;
+        }
+        for(int i = 0; i < 5; i++) {
+            if (random.nextFloat() < extraProbability) {
+                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
+                ItemStack food = RandomFoodPicker.randomFoodStack(random);
+                if (food == null) food = curios;
+                if (curios == null) break;
+                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
+                if (data == null) continue;
+                grade3Tag.add(StringTag.valueOf(data));
+                extraProbability *= 0.8;
+                break;
+            } else extraProbability += 0.05;
+        }
+        for(int i = 0; i < 5; i++) {
+            if (random.nextFloat() < extraProbability) {
+                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
+                ItemStack food = RandomFoodPicker.randomFoodStack(random);
+                if (food == null) food = curios;
+                if (curios == null) break;
+                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
+                if (data == null) continue;
+                grade4Tag.add(StringTag.valueOf(data));
+                extraProbability *= 0.8;
+                break;
+            } else extraProbability += 0.05;
+        }        for(int i = 0; i < 5; i++) {
+            if (random.nextFloat() < extraProbability) {
+                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
+                ItemStack food = RandomFoodPicker.randomFoodStack(random);
+                if (food == null) food = curios;
+                if (curios == null) break;
+                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
+                if (data == null) continue;
+                grade5Tag.add(StringTag.valueOf(data));
+                break;
+            } else extraProbability += 0.05;
+        }
+
+
+
+        tag.put("grade1", grade1Tag);
+        tag.put("grade2", grade2Tag);
+        tag.put("grade3", grade3Tag);
+        tag.put("grade4", grade4Tag);
+        tag.put("grade5", grade5Tag);
         return tag;
     }
 
