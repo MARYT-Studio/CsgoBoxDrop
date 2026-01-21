@@ -12,7 +12,7 @@ import com.reclizer.csgobox.utils.random_pickers.RandomCurioPicker;
 import com.reclizer.csgobox.utils.random_pickers.RandomFoodPicker;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -57,61 +58,62 @@ public class CsgoBox {
             if (!Files.exists(folderPath)) {
                 Files.createDirectories(folderPath);
             }
-            String content ="[\n" +
-                    "  {\n" +
-                    "    \"name\": \"Weapons Supply Box\",\n" +
-                    "    \"key\": \"csgobox:csgo_key0\",\n" +
-                    "    \"drop\": 0,\n" +
-                    "    \"random\": [\n" +
-                    "      2,\n" +
-                    "      5,\n" +
-                    "      6,\n" +
-                    "      20,\n" +
-                    "      625\n" +
-                    "    ],\n" +
-                    "    \"entity\": [\n" +
-                    "      \"minecraft:zombie\",\n" +
-                    "      \"minecraft:skeleton\"\n" +
-                    "    ],\n" +
-                    "    \"grade1\": [\n" +
-                    "      \"minecraft:stone_sword.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:iron_axe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:iron_shovel.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:iron_pickaxe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:iron_axe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:iron_hoe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:iron_sword.withTags{Damage:0}\"\n" +
-                    "    ],\n" +
-                    "    \"grade2\": [\n" +
-                    "      \"minecraft:golden_sword.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:golden_axe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:golden_axe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:golden_pickaxe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:golden_shovel.withTags{Damage:0}\"\n" +
-                    "    ],\n" +
-                    "    \"grade3\": [\n" +
-                    "      \"minecraft:diamond_shovel.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:diamond_pickaxe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:diamond_hoe.withTags{Damage:0}\"\n" +
-                    "    ],\n" +
-                    "    \"grade4\": [\n" +
-                    "      \"minecraft:diamond_axe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:diamond_sword.withTags{Damage:0}\"\n" +
-                    "    ],\n" +
-                    "    \"grade5\": [\n" +
-                    "      \"minecraft:netherite_sword.withTags{Damage:0,Enchantments:[{id:\\\"minecraft:sharpness\\\",lvl:4s},{id:\\\"minecraft:fire_aspect\\\",lvl:1s},{id:\\\"minecraft:sweeping\\\",lvl:2s}],RepairCost:7}\",\n" +
-                    "      \"minecraft:netherite_axe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:netherite_pickaxe.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:netherite_shovel.withTags{Damage:0}\",\n" +
-                    "      \"minecraft:netherite_hoe.withTags{Damage:0}\"\n" +
-                    "    ]\n" +
-                    "  }\n" +
-                    "]";
+            String content = """
+                    [
+                      {
+                        "name": "Weapons Supply Box",
+                        "key": "csgobox:csgo_key0",
+                        "drop": 0,
+                        "random": [
+                          2,
+                          5,
+                          6,
+                          20,
+                          625
+                        ],
+                        "entity": [
+                          "minecraft:zombie",
+                          "minecraft:skeleton"
+                        ],
+                        "grade1": [
+                          "minecraft:stone_sword.withTags{Damage:0}",
+                          "minecraft:iron_axe.withTags{Damage:0}",
+                          "minecraft:iron_shovel.withTags{Damage:0}",
+                          "minecraft:iron_pickaxe.withTags{Damage:0}",
+                          "minecraft:iron_axe.withTags{Damage:0}",
+                          "minecraft:iron_hoe.withTags{Damage:0}",
+                          "minecraft:iron_sword.withTags{Damage:0}"
+                        ],
+                        "grade2": [
+                          "minecraft:golden_sword.withTags{Damage:0}",
+                          "minecraft:golden_axe.withTags{Damage:0}",
+                          "minecraft:golden_axe.withTags{Damage:0}",
+                          "minecraft:golden_pickaxe.withTags{Damage:0}",
+                          "minecraft:golden_shovel.withTags{Damage:0}"
+                        ],
+                        "grade3": [
+                          "minecraft:diamond_shovel.withTags{Damage:0}",
+                          "minecraft:diamond_pickaxe.withTags{Damage:0}",
+                          "minecraft:diamond_hoe.withTags{Damage:0}"
+                        ],
+                        "grade4": [
+                          "minecraft:diamond_axe.withTags{Damage:0}",
+                          "minecraft:diamond_sword.withTags{Damage:0}"
+                        ],
+                        "grade5": [
+                          "minecraft:netherite_sword.withTags{Damage:0,Enchantments:[{id:\\"minecraft:sharpness\\",lvl:4s},{id:\\"minecraft:fire_aspect\\",lvl:1s},{id:\\"minecraft:sweeping\\",lvl:2s}],RepairCost:7}",
+                          "minecraft:netherite_axe.withTags{Damage:0}",
+                          "minecraft:netherite_pickaxe.withTags{Damage:0}",
+                          "minecraft:netherite_shovel.withTags{Damage:0}",
+                          "minecraft:netherite_hoe.withTags{Damage:0}"
+                        ]
+                      }
+                    ]""";
 
             if (!Files.exists(folderPath.resolve("box.json"))) {
                 Path filePath = folderPath.resolve("box.json");
                 // 创建文件并写入内容new FileWriter(filePath.toFile())
-                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath.toFile()), "UTF-8"))) {
+                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath.toFile()), StandardCharsets.UTF_8))) {
 
                     writer.write(content);
                 }
@@ -134,7 +136,7 @@ public class CsgoBox {
     }
 
     @SubscribeEvent
-    public static void onServerStarted(ServerStartedEvent event) {
+    public static void onServerStarting(ServerStartingEvent event) {
         RandomBladePicker.initBladeCache(event.getServer().overworld());
     }
 

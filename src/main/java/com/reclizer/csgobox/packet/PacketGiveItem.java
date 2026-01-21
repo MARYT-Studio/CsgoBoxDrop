@@ -9,6 +9,8 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
+import static com.reclizer.csgobox.utils.random_pickers.RandomBladePicker.fetchBladeStack;
+
 public class PacketGiveItem {
 
     private String item;
@@ -43,6 +45,10 @@ public class PacketGiveItem {
                             emptySlot = i;
                             break;
                         }
+                    }
+                    if (giveItem.getOrCreateTag().contains("keyIdForFetchBladeFromCache")) {
+                        giveItem = fetchBladeStack(giveItem.getOrCreateTag().getInt("keyIdForFetchBladeFromCache"));
+                        giveItem.getOrCreateTag().remove("keyIdForFetchBladeFromCache");
                     }
                     if (emptySlot != -1) {
                         player.getInventory().add(giveItem);
