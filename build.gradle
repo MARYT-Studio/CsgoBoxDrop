@@ -186,6 +186,8 @@ dependencies {
     compileOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:[14.0.20]')
     runtimeOnly fg.deobf('com.blamejared.crafttweaker:CraftTweaker-forge-1.20.1:[14.0.20]')
 
+    implementation fg.deobf("curse.maven:slashblade-resharped-1022428:7363505")
+
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

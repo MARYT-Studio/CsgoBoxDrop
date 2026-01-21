@@ -7,10 +7,12 @@ import com.reclizer.csgobox.gui.RecModMenus;
 import com.reclizer.csgobox.item.ModItems;
 import com.reclizer.csgobox.packet.Networking;
 
+import com.reclizer.csgobox.utils.random_pickers.RandomBladePicker;
 import com.reclizer.csgobox.utils.random_pickers.RandomCurioPicker;
 import com.reclizer.csgobox.utils.random_pickers.RandomFoodPicker;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,6 +20,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -29,6 +33,9 @@ public class CsgoBox {
 
     // Define mod id in a common place for everything to reference
     public static final String MODID = "csgobox";
+    public static final Logger LOGGER = LogManager.getLogger(MODID);
+    // 仅在开发环境中为 true，构建发布前须改为 false
+    public static final boolean DEBUG = true;
 
     public CsgoBox() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -124,6 +131,11 @@ public class CsgoBox {
             }
         });
         Networking.registerMessages();
+    }
+
+    @SubscribeEvent
+    public static void onServerStarted(ServerStartedEvent event) {
+        RandomBladePicker.initBladeCache(event.getServer().overworld());
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

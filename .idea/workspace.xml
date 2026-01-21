@@ -4,14 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c891f7ca-6614-43e9-9125-e46abb85e12f" name="Changes" comment="basic food, curios features">
+    <list default="true" id="c891f7ca-6614-43e9-9125-e46abb85e12f" name="Changes" comment="some tweaks">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/utils/random_pickers/RandomBladePicker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.1.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.1.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.1.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.1.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/CsgoBox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/CsgoBox.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/event/ClickEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/event/ClickEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/event/ModEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/event/ModEvents.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/utils/random_pickers/RandomFoodPicker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/utils/random_pickers/RandomFoodPicker.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,6 +111,7 @@
       <recent name="com.reclizer.csgobox.utils.random_pickers" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.reclizer.csgobox.utils.random_pickers" />
       <recent name="com.reclizer.csgobox.gui.client" />
       <recent name="com.reclizer.csgobox.item" />
     </key>
@@ -319,7 +322,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768924164615</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="some tweaks">
+      <option name="closed" value="true" />
+      <created>1768973034423</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1768973034423</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -328,6 +339,7 @@
     <MESSAGE value="ignore" />
     <MESSAGE value="basic features" />
     <MESSAGE value="basic food, curios features" />
-    <option name="LAST_COMMIT_MESSAGE" value="basic food, curios features" />
+    <MESSAGE value="some tweaks" />
+    <option name="LAST_COMMIT_MESSAGE" value="some tweaks" />
   </component>
 </project>

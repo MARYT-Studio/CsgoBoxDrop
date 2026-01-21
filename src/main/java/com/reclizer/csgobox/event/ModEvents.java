@@ -5,6 +5,7 @@ import com.reclizer.csgobox.CsgoBox;
 
 import com.reclizer.csgobox.item.ItemCsgoBox;
 import com.reclizer.csgobox.item.ModItems;
+import com.reclizer.csgobox.utils.random_pickers.RandomBladePicker;
 import com.reclizer.csgobox.utils.random_pickers.RandomCurioPicker;
 import com.reclizer.csgobox.utils.random_pickers.RandomFoodPicker;
 import net.minecraft.core.registries.Registries;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -75,11 +77,16 @@ public class ModEvents {
 
         if (player.getRandom().nextDouble() < (bossFlag ? 0.6D: probability)) {
             ItemStack box = new ItemStack(ModItems.ITEM_CSGOBOX.get());
-            ItemCsgoBox.setBoxInfo(generateBoxInfo(bossFlag, drops, probability, player.getRandom()), box);
-            entity.spawnAtLocation(box);
-
-            // 掉落了箱子会导致掉落率下降
-            player.getPersistentData().putDouble("probability", bossFlag ? probability * 0.9D : probability * 0.5D);
+            ItemCsgoBox.BoxInfo boxInfo = generateBoxInfo(bossFlag, drops, probability, player.getRandom(), player.level());
+            if (checkIfBoxInvalid(boxInfo, player)) {
+                // 箱子信息无效，不会掉落箱子，按照“没有掉落箱子”的情况给予一定量概率补偿
+                player.getPersistentData().putDouble("probability", bossFlag ? probability * 1.2D : probability * 1.05D);
+            } else {
+                ItemCsgoBox.setBoxInfo(boxInfo, box);
+                entity.spawnAtLocation(box);
+                // 掉落了箱子会导致掉落率下降
+                player.getPersistentData().putDouble("probability", bossFlag ? probability * 0.9D : probability * 0.5D);
+            }
         } else {
             // 如果打怪没有掉落箱子，给予一定量概率补偿
             player.getPersistentData().putDouble("probability", bossFlag ? probability * 1.2D : probability * 1.05D);
@@ -87,11 +94,11 @@ public class ModEvents {
     }
 
 
-    private static ItemCsgoBox.BoxInfo generateBoxInfo(boolean bossFlag, Collection<ItemEntity> drops, double probability, RandomSource random) {
-        return ItemCsgoBox.BoxInfo.deserializeNBT(itemToTag(bossFlag, drops, probability, random));
+    private static ItemCsgoBox.BoxInfo generateBoxInfo(boolean bossFlag, Collection<ItemEntity> drops, double probability, RandomSource random, Level level) {
+        return ItemCsgoBox.BoxInfo.deserializeNBT(itemToTag(bossFlag, drops, probability, random, level));
     }
 
-    private static CompoundTag itemToTag(boolean bossFlag, Collection<ItemEntity> drops, double probability, RandomSource random) {
+    private static CompoundTag itemToTag(boolean bossFlag, Collection<ItemEntity> drops, double probability, RandomSource random, Level level) {
         CompoundTag tag = new CompoundTag();
         tag.putString("name", "Newbie Chest");
         tag.putString("key", "newbie_chest");
@@ -142,10 +149,13 @@ public class ModEvents {
         for(int i = 0; i < 5; i++) {
             if (random.nextFloat() < extraProbability) {
                 ItemStack curios = RandomCurioPicker.randomCurioStack(random);
-                if (curios == null) continue;
-                String data = getStacksData(curios);
-                if (data == null) continue;
-                grade4Tag.add(StringTag.valueOf(data));
+                ItemStack blade = RandomBladePicker.randomBladeStack(random, level);
+                if (curios == null || blade == null) continue;
+                String dataCurios = getStacksData(curios);
+                String dataBlade = getStacksData(blade);
+                if (dataCurios == null || dataBlade == null) continue;
+                grade4Tag.add(StringTag.valueOf(dataCurios));
+                grade4Tag.add(StringTag.valueOf(dataBlade));
                 extraProbability *= 0.8;
             } else extraProbability += 0.05;
         }
@@ -154,19 +164,41 @@ public class ModEvents {
         for(int i = 0; i < 5; i++) {
             if (random.nextFloat() < extraProbability) {
                 ItemStack curios = RandomCurioPicker.randomCurioStack(random);
-                if (curios == null) continue;
-                String data = getStacksData(curios);
-                if (data == null) continue;
-                grade5Tag.add(StringTag.valueOf(data));
+                ItemStack blade = RandomBladePicker.randomBladeStack(random, level);
+                if (curios == null || blade == null) continue;
+                String dataCurios = getStacksData(curios);
+                String dataBlade = getStacksData(blade);
+                if (dataCurios == null || dataBlade == null) continue;
+                grade5Tag.add(StringTag.valueOf(dataCurios));
+                grade5Tag.add(StringTag.valueOf(dataBlade));
                 extraProbability *= 0.8;
             } else extraProbability += 0.05;
         }
 
-        // Grade 5 分组至少有一个饰品
+        // Grade 1-2 分组至少有一个食物
+        ItemStack food = RandomFoodPicker.randomFoodStack(random);
+        if (food != null) {
+            String data = getStacksData(food);
+            if (data != null) {
+                grade1Tag.add(StringTag.valueOf(data));
+                grade2Tag.add(StringTag.valueOf(data));
+            }
+        }
+        // Grade 3-4 分组至少有一个饰品
         ItemStack curios = RandomCurioPicker.randomCurioStack(random);
         if (curios != null) {
             String data = getStacksData(curios);
             if (data != null) {
+                grade3Tag.add(StringTag.valueOf(data));
+                grade4Tag.add(StringTag.valueOf(data));
+            }
+        }
+        // Grade 4-5 分组至少有一个拔刀剑
+        ItemStack blade = RandomBladePicker.randomBladeStack(random, level);
+        if (blade != null) {
+            String data = getStacksData(blade);
+            if (data != null) {
+                grade4Tag.add(StringTag.valueOf(data));
                 grade5Tag.add(StringTag.valueOf(data));
             }
         }
@@ -177,6 +209,17 @@ public class ModEvents {
         tag.put("grade4", grade4Tag);
         tag.put("grade5", grade5Tag);
         return tag;
+    }
+
+    public static boolean checkIfBoxInvalid(ItemCsgoBox.BoxInfo boxInfo, Player player) {
+        int result = 0;
+        if (boxInfo.grade1.isEmpty()) result += 1;
+        if (boxInfo.grade2.isEmpty()) result += 2;
+        if (boxInfo.grade3.isEmpty()) result += 4;
+        if (boxInfo.grade4.isEmpty()) result += 8;
+        if (boxInfo.grade5.isEmpty()) result += 16;
+        if (result > 0 && CsgoBox.DEBUG) CsgoBox.LOGGER.error("Player {} got an invalid box, empty grades are: {}",player.getName().getString(), Integer.toBinaryString(result));
+        return result > 0;
     }
 
 }
