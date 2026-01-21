@@ -4,14 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c891f7ca-6614-43e9-9125-e46abb85e12f" name="Changes" comment="some tweaks">
+    <list default="true" id="c891f7ca-6614-43e9-9125-e46abb85e12f" name="Changes" comment="blade picker completed">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/logo.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.1.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.1.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.1.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.1.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.1.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.1.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/CsgoBox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/CsgoBox.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/packet/PacketGiveItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/packet/PacketGiveItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/utils/random_pickers/RandomBladePicker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/reclizer/csgobox/utils/random_pickers/RandomBladePicker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/mods.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/mods.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +70,9 @@
     &quot;accountId&quot;: &quot;efdcd5d3-45ab-45c5-b36e-d8250f291f5e&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -79,28 +84,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Gradle.CsgoBox [:runClient].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.CsgoBoxDrop [createMcpToSrg].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/23/Desktop/文件/kaifa/mc开发/CsgoBox/src/main/resources/assets/csgobox/models/item&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Gradle.CsgoBox [:runClient].executor": "Run",
+    "Gradle.CsgoBoxDrop [createMcpToSrg].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/JavaProject/CsgoBoxDrop/src/main/resources"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\JavaProject\CsgoBoxDrop\src\main\resources" />
       <recent name="C:\Users\23\Desktop\文件\kaifa\mc开发\CsgoBox\src\main\resources\assets\csgobox\models\item" />
       <recent name="C:\Users\23\Desktop\文件\kaifa\mc开发\CsgoBox\src\main\resources\assets\csgobox\textures\item" />
       <recent name="C:\Users\23\Desktop\文件\kaifa\mc开发\CsgoBox\src\main\java" />
       <recent name="C:\Users\23\Desktop\文件\kaifa\mc开发\CsgoBox\src\main\java\com\reclizer\csgobox\gui" />
-      <recent name="C:\Users\23\Desktop\文件\kaifa\mc开发\CsgoBox\src\main\java\com\reclizer\csgobox\compat" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\23\Desktop\文件\kaifa\mc开发\CsgoBox\src\main\java\com\reclizer\csgobox" />
@@ -328,7 +333,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768973034423</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="blade picker completed">
+      <option name="closed" value="true" />
+      <created>1768987686632</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1768987686632</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -338,6 +351,7 @@
     <MESSAGE value="basic features" />
     <MESSAGE value="basic food, curios features" />
     <MESSAGE value="some tweaks" />
-    <option name="LAST_COMMIT_MESSAGE" value="some tweaks" />
+    <MESSAGE value="blade picker completed" />
+    <option name="LAST_COMMIT_MESSAGE" value="blade picker completed" />
   </component>
 </project>
