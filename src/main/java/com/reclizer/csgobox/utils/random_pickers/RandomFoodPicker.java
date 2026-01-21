@@ -50,8 +50,8 @@ public final class RandomFoodPicker {
 
         Item item = cache[random.nextInt(cache.length)];
 
-        int max = item.getMaxStackSize();
-        int count = 1 + random.nextInt(max);
+        int range = item.getMaxStackSize();
+        int count = (int) Math.ceil((range / 4.0d) * random.nextGaussian() + (range / 3.0d));
 
         return new ItemStack(item, count);
     }

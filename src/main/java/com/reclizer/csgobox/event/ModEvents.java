@@ -125,69 +125,51 @@ public class ModEvents {
 
         for(int i = 0; i < 5; i++) {
             if (random.nextFloat() < extraProbability) {
-                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
                 ItemStack food = RandomFoodPicker.randomFoodStack(random);
-                if (food == null) food = curios;
-                if (curios == null) break;
-                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
+                if (food == null) continue;
+                String data = getStacksData(food);
                 if (data == null) continue;
                 grade1Tag.add(StringTag.valueOf(data));
                 extraProbability *= 0.8;
+
+                // 食物出一个就够了
                 break;
             } else extraProbability += 0.05;
         }
+        extraProbability = Math.max(extraProbability, 0.9d);
+
+
         for(int i = 0; i < 5; i++) {
             if (random.nextFloat() < extraProbability) {
                 ItemStack curios = RandomCurioPicker.randomCurioStack(random);
-                ItemStack food = RandomFoodPicker.randomFoodStack(random);
-                if (food == null) food = curios;
-                if (curios == null) break;
-                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
-                if (data == null) continue;
-                grade2Tag.add(StringTag.valueOf(data));
-                extraProbability *= 0.8;
-                break;
-            } else extraProbability += 0.05;
-        }
-        for(int i = 0; i < 5; i++) {
-            if (random.nextFloat() < extraProbability) {
-                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
-                ItemStack food = RandomFoodPicker.randomFoodStack(random);
-                if (food == null) food = curios;
-                if (curios == null) break;
-                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
-                if (data == null) continue;
-                grade3Tag.add(StringTag.valueOf(data));
-                extraProbability *= 0.8;
-                break;
-            } else extraProbability += 0.05;
-        }
-        for(int i = 0; i < 5; i++) {
-            if (random.nextFloat() < extraProbability) {
-                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
-                ItemStack food = RandomFoodPicker.randomFoodStack(random);
-                if (food == null) food = curios;
-                if (curios == null) break;
-                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
+                if (curios == null) continue;
+                String data = getStacksData(curios);
                 if (data == null) continue;
                 grade4Tag.add(StringTag.valueOf(data));
                 extraProbability *= 0.8;
-                break;
             } else extraProbability += 0.05;
-        }        for(int i = 0; i < 5; i++) {
+        }
+        extraProbability = Math.max(extraProbability, 0.9d);
+
+        for(int i = 0; i < 5; i++) {
             if (random.nextFloat() < extraProbability) {
                 ItemStack curios = RandomCurioPicker.randomCurioStack(random);
-                ItemStack food = RandomFoodPicker.randomFoodStack(random);
-                if (food == null) food = curios;
-                if (curios == null) break;
-                String data = getStacksData((random.nextFloat() < 1 - extraProbability) ? curios: food);
+                if (curios == null) continue;
+                String data = getStacksData(curios);
                 if (data == null) continue;
                 grade5Tag.add(StringTag.valueOf(data));
-                break;
+                extraProbability *= 0.8;
             } else extraProbability += 0.05;
         }
 
-
+        // Grade 5 分组至少有一个饰品
+        ItemStack curios = RandomCurioPicker.randomCurioStack(random);
+        if (curios != null) {
+            String data = getStacksData(curios);
+            if (data != null) {
+                grade5Tag.add(StringTag.valueOf(data));
+            }
+        }
 
         tag.put("grade1", grade1Tag);
         tag.put("grade2", grade2Tag);
