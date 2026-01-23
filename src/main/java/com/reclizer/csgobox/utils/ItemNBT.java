@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemNBT {
     public static String readTags(ItemStack stack){
@@ -44,12 +45,12 @@ public class ItemNBT {
 
 
 
-    public static String getStacksData(ItemStack stack){
+    public static @NotNull String getStacksData(ItemStack stack){
         if(stack.isEmpty()){
-            return null;
+            return "";
         }
         ResourceLocation rl = ForgeRegistries.ITEMS.getKey(stack.getItem());
-        if (rl == null) return null;
+        if (rl == null) return "";
         String data = rl.toString();
         if(stack.getTag() != null){
             String tag=ItemNBT.readTags(stack);

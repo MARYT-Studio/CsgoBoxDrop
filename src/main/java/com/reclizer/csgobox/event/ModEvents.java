@@ -110,12 +110,13 @@ public class ModEvents {
         ListTag grade3Tag = new ListTag();
         ListTag grade4Tag = new ListTag();
         ListTag grade5Tag = new ListTag();
+
+        // 将怪物的掉落物成倍放入箱子
         for (ItemEntity itemEntity: drops.stream().toList()) {
             ItemStack item = itemEntity.getItem();
             int count = item.getCount();
             if (bossFlag && count > 5) item.setCount((int) Math.floor(1 + new Random().nextFloat(4f)));
             String itemData = getStacksData(item);
-            if (itemData == null) continue;
             switch (item.getRarity().ordinal()) {
                 case 0: grade1Tag.add(StringTag.valueOf(itemData));
                 case 1: grade2Tag.add(StringTag.valueOf(itemData));
@@ -126,80 +127,68 @@ public class ModEvents {
             }
         }
 
-        // 额外的奖励，玩家在箱子概率越低的时候获得的箱子开出好东西的几率越高
-        // 这个概率会随着额外奖励的出货情况改变
-        double extraProbability = 1 - probability;
+        int rewardCount = random.nextIntBetweenInclusive(1, 3);
+        int base = bossFlag ? 2: 1;
 
-        for(int i = 0; i < 5; i++) {
-            if (random.nextFloat() < extraProbability) {
+        // 击杀Boss的保底会变为2个，否则保底1个结束后都需要概率roll
+        // grade2Tag固定用来放食物
+        for(int i = 0; i < rewardCount; i++) {
+            if (i < base) {
                 ItemStack food = RandomFoodPicker.randomFoodStack(random);
-                if (food == null) continue;
                 String data = getStacksData(food);
-                if (data == null) continue;
-                grade1Tag.add(StringTag.valueOf(data));
-                extraProbability *= 0.8;
-
-                // 食物出一个就够了
-                break;
-            } else extraProbability += 0.05;
-        }
-        extraProbability = Math.max(extraProbability, 0.9d);
-
-
-        for(int i = 0; i < 5; i++) {
-            if (random.nextFloat() < extraProbability) {
-                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
-                ItemStack blade = RandomBladePicker.randomBladeStack(random, level);
-                if (curios == null || blade == null) continue;
-                String dataCurios = getStacksData(curios);
-                String dataBlade = getStacksData(blade);
-                if (dataCurios == null || dataBlade == null) continue;
-                grade4Tag.add(StringTag.valueOf(dataCurios));
-                grade4Tag.add(StringTag.valueOf(dataBlade));
-                extraProbability *= 0.8;
-            } else extraProbability += 0.05;
-        }
-        extraProbability = Math.max(extraProbability, 0.9d);
-
-        for(int i = 0; i < 5; i++) {
-            if (random.nextFloat() < extraProbability) {
-                ItemStack curios = RandomCurioPicker.randomCurioStack(random);
-                ItemStack blade = RandomBladePicker.randomBladeStack(random, level);
-                if (curios == null || blade == null) continue;
-                String dataCurios = getStacksData(curios);
-                String dataBlade = getStacksData(blade);
-                if (dataCurios == null || dataBlade == null) continue;
-                grade5Tag.add(StringTag.valueOf(dataCurios));
-                grade5Tag.add(StringTag.valueOf(dataBlade));
-                extraProbability *= 0.8;
-            } else extraProbability += 0.05;
-        }
-
-        // Grade 1-2 分组至少有一个食物
-        ItemStack food = RandomFoodPicker.randomFoodStack(random);
-        if (food != null) {
-            String data = getStacksData(food);
-            if (data != null) {
-                grade1Tag.add(StringTag.valueOf(data));
                 grade2Tag.add(StringTag.valueOf(data));
+            } else {
+                if (random.nextFloat() < probability) {
+                    ItemStack food = RandomFoodPicker.randomFoodStack(random);
+                    String data = getStacksData(food);
+                    grade2Tag.add(StringTag.valueOf(data));
+                }
             }
+
         }
-        // Grade 3-4 分组至少有一个饰品
-        ItemStack curios = RandomCurioPicker.randomCurioStack(random);
-        if (curios != null) {
-            String data = getStacksData(curios);
-            if (data != null) {
+
+        // grade3：如果打了boss放的就是饰品，否则放的是食物
+        for(int i = 0; i < rewardCount; i++) {
+            if (i < base) {
+                ItemStack reward = bossFlag? RandomCurioPicker.randomCurioStack(random) : RandomFoodPicker.randomFoodStack(random);
+                String data = getStacksData(reward);
                 grade3Tag.add(StringTag.valueOf(data));
-                grade4Tag.add(StringTag.valueOf(data));
+            } else {
+                if (random.nextFloat() < probability) {
+                    ItemStack reward = bossFlag? RandomCurioPicker.randomCurioStack(random) : RandomFoodPicker.randomFoodStack(random);
+                    String data = getStacksData(reward);
+                    grade3Tag.add(StringTag.valueOf(data));
+                }
             }
         }
-        // Grade 4-5 分组至少有一个拔刀剑
-        ItemStack blade = RandomBladePicker.randomBladeStack(random, level);
-        if (blade != null) {
-            String data = getStacksData(blade);
-            if (data != null) {
+
+        // grade4：固定是饰品
+        for(int i = 0; i < rewardCount; i++) {
+            if (i < base) {
+                ItemStack reward = RandomCurioPicker.randomCurioStack(random);
+                String data = getStacksData(reward);
                 grade4Tag.add(StringTag.valueOf(data));
+            } else {
+                if (random.nextFloat() < probability) {
+                    ItemStack reward = RandomCurioPicker.randomCurioStack(random);
+                    String data = getStacksData(reward);
+                    grade4Tag.add(StringTag.valueOf(data));
+                }
+            }
+        }
+
+        // grade5：固定是拔刀剑
+        for(int i = 0; i < rewardCount; i++) {
+            if (i < base) {
+                ItemStack reward = RandomBladePicker.randomBladeStack(random, level);
+                String data = getStacksData(reward);
                 grade5Tag.add(StringTag.valueOf(data));
+            } else {
+                if (random.nextFloat() < probability) {
+                    ItemStack reward = RandomBladePicker.randomBladeStack(random, level);
+                    String data = getStacksData(reward);
+                    grade5Tag.add(StringTag.valueOf(data));
+                }
             }
         }
 

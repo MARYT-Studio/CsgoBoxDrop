@@ -4,6 +4,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +40,14 @@ public final class RandomFoodPicker {
      * - 数量为 [1, maxStackSize] 的随机合法整数
      * - 运行时不遍历注册表，速度最快
      */
-    public static ItemStack randomFoodStack(RandomSource random) {
+    public static @NotNull ItemStack randomFoodStack(RandomSource random) {
         Item[] cache = FOOD_ITEMS;
         if (cache == null || cache.length == 0) {
             initFoodCache();
             cache = FOOD_ITEMS;
             if (cache == null || cache.length == 0) {
-                return ItemStack.EMPTY;
+                // 返回一个默认的食物
+                return Items.GOLDEN_APPLE.getDefaultInstance();
             }
         }
 
