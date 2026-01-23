@@ -18,7 +18,7 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CsgoBox.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CsgoBox.MOD_ID)
 public class BlurHandler {
 
     /** uses `minecraft` as namespace because optifine breaks the shader loading */
@@ -122,8 +122,10 @@ public class BlurHandler {
     }
 
     private static float getProgress() {
-        return Math.min((System.currentTimeMillis() - start) / (float) 100, 1);
+        return Math.min((System.currentTimeMillis() - start) / 100.0f, 1);
     }
+
+    @SuppressWarnings("lossy-conversions")
     public static int getBackgroundColor() {
         //透明度/r/g/b
         int color = (128 << 24) | (90 << 16) | (90 << 8) | 90;

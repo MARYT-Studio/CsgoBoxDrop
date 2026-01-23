@@ -32,7 +32,7 @@ import java.util.Random;
 
 import static com.reclizer.csgobox.utils.ItemNBT.getStacksData;
 
-@Mod.EventBusSubscriber(modid = CsgoBox.MODID)
+@Mod.EventBusSubscriber(modid = CsgoBox.MOD_ID)
 public class ModEvents {
 
     @SubscribeEvent
@@ -197,6 +197,7 @@ public class ModEvents {
         tag.put("grade3", grade3Tag);
         tag.put("grade4", grade4Tag);
         tag.put("grade5", grade5Tag);
+        if (CsgoBox.DEBUG) CsgoBox.LOGGER.debug(tag.toString());
         return tag;
     }
 

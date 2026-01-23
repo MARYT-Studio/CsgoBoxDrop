@@ -42,7 +42,7 @@ public class CsgoBoxManage {
         if (Files.exists(CONFIG_FILE)) {
             stream = Files.newInputStream(file.toPath());
         } else {
-            ResourceLocation res = new ResourceLocation(CsgoBox.MODID, "box.json");
+            ResourceLocation res = new ResourceLocation(CsgoBox.MOD_ID, "box.json");
             Optional<Resource> optional = Minecraft.getInstance().getResourceManager().getResource(res);
             if (optional.isPresent()) {
                 stream = optional.get().open();
@@ -57,7 +57,7 @@ public class CsgoBoxManage {
 
 
     public static void updateBoxJson(String name, List<String> item,List<Integer> grade)throws IOException {
-        JsonArray jsonArray = readJsonFile(CONFIG_FILE);
+        JsonArray jsonArray = readJsonFile();
         //"random": [2, 5, 6,20, 625],
         // 创建新的 JSON 对象
         JsonObject newObject = new JsonObject();
@@ -108,22 +108,22 @@ public class CsgoBoxManage {
         jsonArray.add(newObject);
 
         // 将更新后的数组写回文件
-        writeJsonFile(CONFIG_FILE, jsonArray);
+        writeJsonFile(jsonArray);
     }
 
-    private static JsonArray readJsonFile(Path filePath) {
+    private static JsonArray readJsonFile() {
         try  {
             // 使用 JsonParser 解析 JSON 文件
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-            return gson.fromJson(Files.newBufferedReader(filePath, StandardCharsets.UTF_8), JsonArray.class);
+            return gson.fromJson(Files.newBufferedReader(CsgoBoxManage.CONFIG_FILE, StandardCharsets.UTF_8), JsonArray.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return new JsonArray();
     }
 
-    private static void writeJsonFile(Path filePath, JsonArray jsonArray) {
+    private static void writeJsonFile(JsonArray jsonArray) {
         try  {
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -131,7 +131,7 @@ public class CsgoBoxManage {
 
             // 使用 Files.writeString 写入文件
             //Files.writeString(filePath, jsonContent, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
-            Files.writeString(filePath, jsonContent, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.writeString(CsgoBoxManage.CONFIG_FILE, jsonContent, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
 
 
         } catch (IOException e) {

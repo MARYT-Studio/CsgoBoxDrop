@@ -19,7 +19,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CsgoBox.MODID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CsgoBox.MOD_ID)
 public class ClickEvent {
 
 

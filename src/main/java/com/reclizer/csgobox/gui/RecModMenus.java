@@ -12,7 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 
 public class RecModMenus {
-    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, CsgoBox.MODID);
+    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, CsgoBox.MOD_ID);
 
 
 

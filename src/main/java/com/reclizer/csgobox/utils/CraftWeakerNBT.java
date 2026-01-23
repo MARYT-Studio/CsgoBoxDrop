@@ -12,20 +12,16 @@ import java.util.Map;
 
 public class CraftWeakerNBT {
 
-    public static ItemStack setTags(ItemStack stack, String tagStr){
-
-
+    public static void setTags(ItemStack stack, String tagStr){
         JsonObject jsonObject = JsonParser.parseString(tagStr).getAsJsonObject();
-        MapData mapData= JSONConverter.convert(jsonObject);
-        Map<String, IData> map=mapData.asMap();
-        CompoundTag tag=stack.getOrCreateTagElement(ItemStack.TAG_DISPLAY);
+        MapData mapData = JSONConverter.convert(jsonObject);
+        Map<String, IData> map = mapData.asMap();
+        CompoundTag tag = stack.getOrCreateTagElement(ItemStack.TAG_DISPLAY);
 
         for(String key:map.keySet()){
             tag.put(key,map.get(key).getInternal());
         }
 
         stack.setTag(tag);
-
-        return stack;
     }
 }

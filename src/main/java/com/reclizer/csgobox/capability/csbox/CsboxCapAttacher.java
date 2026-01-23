@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class CsboxCapAttacher {
 
     private static class CsboxCapProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-        public static final ResourceLocation IDENTIFIER = new ResourceLocation(CsgoBox.MODID, "csbox");
+        public static final ResourceLocation IDENTIFIER = new ResourceLocation(CsgoBox.MOD_ID, "csbox");
 
         private final ICsboxCap backend = new CsboxCap(null);
         private final LazyOptional<ICsboxCap> optionalData = LazyOptional.of(() -> backend);
@@ -26,10 +26,6 @@ public class CsboxCapAttacher {
         @Override
         public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
             return ModCapability.PLAYER_SEED.orEmpty(cap, this.optionalData);
-        }
-
-        void invalidate() {
-            this.optionalData.invalidate();
         }
 
         @Override

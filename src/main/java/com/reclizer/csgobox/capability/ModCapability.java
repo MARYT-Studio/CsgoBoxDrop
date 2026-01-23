@@ -35,7 +35,7 @@ public class ModCapability {
 
 
     @SuppressWarnings("unused")
-    @Mod.EventBusSubscriber(modid = CsgoBox.MODID)
+    @Mod.EventBusSubscriber(modid = CsgoBox.MOD_ID)
     public static class EventHandler {
 
         @SubscribeEvent

@@ -2,6 +2,7 @@ package com.reclizer.csgobox.utils.random_pickers;
 
 import com.reclizer.csgobox.CsgoBox;
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
@@ -11,9 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class RandomBladePicker {
-    private RandomBladePicker() {}
+
 
     private static volatile ItemStack[] SLASHBLADES = null;
+
     public static void initBladeCache(Level level) {
         if (SLASHBLADES != null && SLASHBLADES.length != 0) return;
         SLASHBLADES = null;
@@ -23,12 +25,14 @@ public final class RandomBladePicker {
         }
 
         SLASHBLADES = blades.toArray(ItemStack[]::new);
+        CsgoBox.LOGGER.info("SlashBlade list initialized. {} entries.", SLASHBLADES.length);
     }
+
     public static ItemStack fetchBladeStack(int keyId) {
         ItemStack[] cache = SLASHBLADES;
         if (cache == null || cache.length == 0) {
             CsgoBox.LOGGER.error("SlashBlade cache is empty");
-            return ItemStack.EMPTY;
+            return SlashBladeItems.SLASHBLADE.get().getDefaultInstance();
         }
         return cache[keyId];
     }
@@ -39,7 +43,7 @@ public final class RandomBladePicker {
             cache = SLASHBLADES;
             if (cache == null || cache.length == 0) {
                 CsgoBox.LOGGER.error("SlashBlade cache is empty");
-                return ItemStack.EMPTY;
+                return SlashBladeItems.SLASHBLADE.get().getDefaultInstance();
             }
         }
 
