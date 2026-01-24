@@ -40,6 +40,12 @@ public class PacketCsgoProgress {
             if (buttonID == 2) {
                 if (entity != null && entity.getMainHandItem().getItem() instanceof ItemCsgoBox) {
                     entity.getMainHandItem().shrink(1);
+                    for (ItemStack stack : entity.getInventory().items) {
+                        if (Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString().equals(item) ) {
+                            stack.shrink(1);
+
+                        }
+                    }
                 }
             }
         });

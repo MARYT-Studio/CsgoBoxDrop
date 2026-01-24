@@ -66,11 +66,26 @@ public class ClickEvent {
         InteractionHand hand = player.getUsedItemHand();
         ItemStack heldItem = player.getMainHandItem();
         if (heldItem.getItem() == ModItems.ITEM_CSGOBOX.get() && event.getHand() == hand) {
+            //ItemStack stack = entity.getItemInHand(InteractionHand.MAIN_HAND);
+
+            BlurHandler.isShaderOn=true;
+
+            //System.out.println(entity.getLuck());
+            player.playSound(ModSounds.CS_OPEN.get(), 10F, 1F);
+
             ItemCsgoBox.BoxInfo info =ItemCsgoBox.getBoxInfo(heldItem);
-            if(info != null && !ModEvents.checkIfBoxInvalid(info, player)){
-                BlurHandler.isShaderOn=true;
-                player.playSound(ModSounds.CS_OPEN.get(), 10F, 1F);
+            if(info!=null){
+                //System.out.println(Arrays.toString(info.boxRandom));
+//            if(level.isClientSide){
+//                DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+//
                 Minecraft.getInstance().setScreen(new CsboxScreen());
+
+//                });
+
+                //}
+
+                //execute(level, entity.getX(), entity.getY(), entity.getZ(), entity, stack);
             }
         }
     }
