@@ -1,9 +1,10 @@
 package com.reclizer.csgobox.utils.random_pickers;
 
-import com.reclizer.csgobox.CsgoBox;
+import com.reclizer.csgobox.CsgoBoxDrop;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
@@ -40,15 +41,18 @@ public final class RandomCurioPicker {
         CACHED_CURIOS = set.toArray(Item[]::new);
     }
 
-    public static ItemStack randomCurioStack(RandomSource random) {
+    public static String randomCurioData(RandomSource random) {
         Item[] cache = CACHED_CURIOS;
+        String defaultData = Items.TOTEM_OF_UNDYING.getDefaultInstance().save(new CompoundTag()).getAsString();
+
         if (cache.length == 0) {
-            CsgoBox.LOGGER.error("curios is not picked properly, give a default curios");
-            return Items.TOTEM_OF_UNDYING.getDefaultInstance();
+            CsgoBoxDrop.LOGGER.error("curios is not picked properly, give a default curios");
+            return defaultData;
         }
 
         Item item = cache[random.nextInt(cache.length)];
 
-        return new ItemStack(item, 1);
+        String result = (new ItemStack(item, 1)).save(new CompoundTag()).toString();
+        return result.contains("minecraft:air") ? defaultData: result;
     }
 }

@@ -1,9 +1,9 @@
 package com.reclizer.csgobox.utils.random_pickers;
 
-import com.reclizer.csgobox.CsgoBox;
+import com.reclizer.csgobox.CsgoBoxDrop;
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -25,37 +25,30 @@ public final class RandomBladePicker {
         }
 
         SLASHBLADES = blades.toArray(ItemStack[]::new);
-        CsgoBox.LOGGER.info("SlashBlade list initialized. {} entries.", SLASHBLADES.length);
-        if (CsgoBox.DEBUG) {
-            CsgoBox.LOGGER.debug("SlashBlade list are below:");
+        CsgoBoxDrop.LOGGER.info("SlashBlade list initialized. {} entries.", SLASHBLADES.length);
+        if (CsgoBoxDrop.DEBUG) {
+            CsgoBoxDrop.LOGGER.debug("SlashBlade list are below:");
             for (ItemStack blade: SLASHBLADES) {
-                CsgoBox.LOGGER.debug("{}", blade.toString());
+                CsgoBoxDrop.LOGGER.debug("{}", blade.save(new CompoundTag()));
             }
         }
     }
 
-    public static ItemStack fetchBladeStack(int keyId) {
+    public static String randomBladeData(RandomSource random, Level level) {
         ItemStack[] cache = SLASHBLADES;
-        if (cache == null || cache.length == 0) {
-            CsgoBox.LOGGER.error("SlashBlade cache is empty");
-            return SlashBladeItems.SLASHBLADE.get().getDefaultInstance();
-        }
-        return cache[keyId];
-    }
-    public static ItemStack randomBladeStack(RandomSource random, Level level) {
-        ItemStack[] cache = SLASHBLADES;
+        String defaultData = ItemStack.EMPTY.save(new CompoundTag()).getAsString();
+
         if (cache == null || cache.length == 0) {
             initBladeCache(level);
             cache = SLASHBLADES;
             if (cache == null || cache.length == 0) {
-                CsgoBox.LOGGER.error("SlashBlade cache is empty");
-                return SlashBladeItems.SLASHBLADE.get().getDefaultInstance();
+                CsgoBoxDrop.LOGGER.error("SlashBlade cache is empty, return default SlashBlade");
+                return defaultData;
             }
         }
 
-        int keyId = random.nextInt(cache.length);
-        ItemStack result = cache[keyId];
-        result.getOrCreateTag().putInt("keyIdForFetchBladeFromCache", keyId);
-        return result;
+//        String result = cache[random.nextInt(cache.length)].save(new CompoundTag()).getAsString();
+//        return result.contains("minecraft:air") ? defaultData: result;
+        return cache[random.nextInt(cache.length)].save(new CompoundTag()).getAsString();
     }
 }

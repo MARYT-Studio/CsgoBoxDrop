@@ -1,6 +1,6 @@
 package com.reclizer.csgobox.event;
 
-import com.reclizer.csgobox.CsgoBox;
+import com.reclizer.csgobox.CsgoBoxDrop;
 import com.reclizer.csgobox.gui.client.CsLookItemScreen;
 import com.reclizer.csgobox.gui.client.CsboxProgressScreen;
 import com.reclizer.csgobox.gui.client.CsboxScreen;
@@ -19,7 +19,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CsgoBox.MOD_ID)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = CsgoBoxDrop.MOD_ID)
 public class ClickEvent {
 
 

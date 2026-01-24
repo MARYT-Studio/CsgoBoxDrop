@@ -2,9 +2,6 @@ package com.reclizer.csgobox.item;
 
 import com.google.common.collect.Lists;
 import com.google.gson.annotations.SerializedName;
-
-
-import com.reclizer.csgobox.utils.ItemNBT;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
@@ -17,6 +14,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 import static net.minecraft.nbt.Tag.TAG_STRING;
+import static com.reclizer.csgobox.utils.ItemNBT.getStacks;
 
 public class ItemCsgoBox extends Item {
     public ItemCsgoBox() {
@@ -46,40 +44,32 @@ public class ItemCsgoBox extends Item {
 
             if (info.grade1 != null && !info.grade1.isEmpty()) {
                 for (int i = 0; i < info.grade1.size(); i++) {
-                    ItemsMap.put(ItemNBT.getStacks(info.grade1.get(i)), 1);
+                    ItemsMap.put(getStacks(info.grade1.get(i)), 1);
                 }
             }
             if (info.grade2 != null && !info.grade2.isEmpty()) {
                 for (int i = 0; i < info.grade2.size(); i++) {
-                    ItemsMap.put(ItemNBT.getStacks(info.grade2.get(i)), 2);
+                    ItemsMap.put(getStacks(info.grade2.get(i)), 2);
                 }
             }
             if (info.grade3 != null && !info.grade3.isEmpty()) {
                 for (int i = 0; i < info.grade3.size(); i++) {
-                    ItemsMap.put(ItemNBT.getStacks(info.grade3.get(i)), 3);
+                    ItemsMap.put(getStacks(info.grade3.get(i)), 3);
                 }
             }
             if (info.grade4 != null && !info.grade4.isEmpty()) {
                 for (int i = 0; i < info.grade4.size(); i++) {
-                    ItemsMap.put(ItemNBT.getStacks(info.grade4.get(i)), 4);
+                    ItemsMap.put(getStacks(info.grade4.get(i)), 4);
                 }
             }
             if (info.grade5 != null && !info.grade5.isEmpty()) {
                 for (int i = 0; i < info.grade5.size(); i++) {
-                    ItemsMap.put(ItemNBT.getStacks(info.grade5.get(i)), 5);
+                    ItemsMap.put(getStacks(info.grade5.get(i)), 5);
                 }
             }
         }
         return ItemsMap;
 
-    }
-
-    public static String getKey(ItemStack stack) {
-        BoxInfo info = getBoxInfo(stack);
-        if (info != null && info.boxKey != null) {
-            return info.boxKey;
-        }
-        return null;
     }
 
     public static final String BOX_INFO_TAG = "BoxItemInfo";
@@ -126,7 +116,7 @@ public class ItemCsgoBox extends Item {
         if (info != null) {
             List<String> item = info.grade1;
             for (String value : item) {
-                ItemStack itemStack = ItemNBT.getStacks(value);
+                ItemStack itemStack = getStacks(value);
 
                 Component component = itemStack.getItem().getName(itemStack);
                 MutableComponent mutableComponent = component.copy();
@@ -134,7 +124,7 @@ public class ItemCsgoBox extends Item {
             }
             List<String> item2 = info.grade2;
             for (String value : item2) {
-                ItemStack itemStack = ItemNBT.getStacks(value);
+                ItemStack itemStack = getStacks(value);
                 Component component = itemStack.getItem().getName(itemStack);
                 MutableComponent mutableComponent = component.copy();
                 tooltip.add(mutableComponent.withStyle(ChatFormatting.DARK_BLUE));
@@ -142,7 +132,7 @@ public class ItemCsgoBox extends Item {
             }
             List<String> item3 = info.grade3;
             for (String value : item3) {
-                ItemStack itemStack = ItemNBT.getStacks(value);
+                ItemStack itemStack = getStacks(value);
                 Component component = itemStack.getItem().getName(itemStack);
                 MutableComponent mutableComponent = component.copy();
                 tooltip.add(mutableComponent.withStyle(ChatFormatting.DARK_PURPLE));
@@ -150,7 +140,7 @@ public class ItemCsgoBox extends Item {
             }
             List<String> item4 = info.grade4;
             for (String value : item4) {
-                ItemStack itemStack = ItemNBT.getStacks(value);
+                ItemStack itemStack = getStacks(value);
                 Component component = itemStack.getItem().getName(itemStack);
                 MutableComponent mutableComponent = component.copy();
                 tooltip.add(mutableComponent.withStyle(ChatFormatting.RED));

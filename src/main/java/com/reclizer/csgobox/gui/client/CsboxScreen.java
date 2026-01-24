@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -36,7 +35,7 @@ public class CsboxScreen extends Screen {
     private final Level world;
 
 
-    private final Player entity;
+    private final Player player;
     public int gameTick = 0;
     ImageButton imagebutton_open_box;
     ImageButton imagebutton_back_box;
@@ -58,8 +57,8 @@ public class CsboxScreen extends Screen {
 
         if (Minecraft.getInstance().player != null) {
             this.minecraft = Minecraft.getInstance();
-            this.entity = Minecraft.getInstance().player;
-            this.world = entity.level();
+            this.player = Minecraft.getInstance().player;
+            this.world = player.level();
             ItemStack boxStack = Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND);
             ItemCsgoBox box = (ItemCsgoBox) boxStack.getItem();
 
@@ -70,14 +69,8 @@ public class CsboxScreen extends Screen {
 
             this.itemsList = itemsListProgress(this.itemGroup);
             this.gradeList = gradeListProgress(this.itemGroup);
-
-            if (ItemCsgoBox.getKey(itemMenu) != null) {
-                ResourceLocation resourceLocation = new ResourceLocation(ItemCsgoBox.getKey(itemMenu));
-
-                itemKey = new ItemStack(ForgeRegistries.ITEMS.getValue(resourceLocation));
-            }
         } else {
-            this.entity = null;
+            this.player = null;
             this.world = null;
         }
 
@@ -176,13 +169,15 @@ public class CsboxScreen extends Screen {
 
         guiGraphics.fill(this.width * 25 / 100, this.height * 92 / 100, this.width * 75 / 100, this.height * 92 / 100 + 1, 0xFFD3D3D3);
         BlurHandler.updateShader(false);
-        this.minecraft.options.hideGui = true;
+        if (this.minecraft != null) {
+            this.minecraft.options.hideGui = true;
+        }
         RenderSystem.disableBlend();
         int FrameWidth = width * 26 / 100;
 
         float scale = FrameWidth / 16F;
         //ModItems.ITEM_CSGOBOX.get()
-        GuiItemMove.renderItemInInventoryFollowsMouse(guiGraphics, this.width * 37 / 100, this.height * 12 / 100, this.itemRotX, this.itemRotY, itemMenu, this.entity, scale);
+        GuiItemMove.renderItemInInventoryFollowsMouse(guiGraphics, this.width * 37 / 100, this.height * 12 / 100, this.itemRotX, this.itemRotY, itemMenu, this.player, scale);
         int x = 0;
         int y = 0;
 
@@ -198,20 +193,16 @@ public class CsboxScreen extends Screen {
             x = px;
             y = py;
             if (grade == 5) break;
-            IconListTools.renderItemFrame(this.entity, guiGraphics, itemStack1, this.width * 4 / 100 + px * this.width * 9 / 100, this.height * py / 100, this.width, this.height, grade);
+            IconListTools.renderItemFrame(this.player, guiGraphics, itemStack1, this.width * 4 / 100 + px * this.width * 9 / 100, this.height * py / 100, this.width, this.height, grade);
         }
         if (gradeList.get(gradeList.size() - 1) == 5) {
 
-            IconListTools.renderItemFrame(this.entity, guiGraphics, ItemStack.EMPTY, this.width * 4 / 100 + x * this.width * 9 / 100, this.height * y / 100, this.width, this.height, 5);
+            IconListTools.renderItemFrame(this.player, guiGraphics, ItemStack.EMPTY, this.width * 4 / 100 + x * this.width * 9 / 100, this.height * y / 100, this.width, this.height, 5);
         }
 
         if (itemKey != null) {
-            //System.out.println(ForgeRegistries.ITEMS.getKey(itemKey.getItem()));
-            IconListTools.renderGuiItem(this.entity, this.world, guiGraphics, itemKey, this.width * 25F / 100, this.height * 93F / 100, 1);
+            IconListTools.renderGuiItem(this.player, this.world, guiGraphics, itemKey, this.width * 25F / 100, this.height * 93F / 100, 1);
         }
-
-        //GuiIconTool.renderItemFrame(this.entity,guiGraphics,itemStack,this.width, this.height,0xFFFF0000 ,2);
-        //renderEntityInInventoryFollowsMouse(guiGraphics, i + 51, j + 75, 30, (float)(i + 51) - this.xMouse, (float)(j + 75 - 50) - this.yMouse, this.minecraft.player);
     }
 
 
@@ -219,7 +210,9 @@ public class CsboxScreen extends Screen {
     public boolean keyPressed(int key, int b, int c) {
         if (key == 256) {
             //System.out.println("width:"+this.width+"height"+this.height);
-            this.minecraft.player.closeContainer();
+            if (this.minecraft != null) {
+                this.player.closeContainer();
+            }
             BlurHandler.updateShader(true);
             this.minecraft.options.hideGui = false;
             return true;
@@ -286,15 +279,7 @@ public class CsboxScreen extends Screen {
     public int boxKeyCount;
 
     public int isBoxKey() {
-        int i = 0;
-        for (ItemStack stack : entity.getInventory().items) {
-
-            if (Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString().equals(ItemCsgoBox.getKey(itemMenu))) {
-                i = stack.getCount();
-                return i;
-            }
-        }
-        return i;
+        return 32767;
     }
 
 
@@ -358,13 +343,9 @@ public class CsboxScreen extends Screen {
     public void init() {
         super.init();
         imagebutton_open_box = new ImageButton(this.width * 67 / 100, this.height * 94 / 100, this.width * 4 / 100, this.height * 5 / 100, 0, 0, 64, new ResourceLocation("csgobox:textures/screens/atlas/open_box.png"), 82, 128, e -> {
-            if (ItemCsgoBox.getKey(itemMenu) != null && entity.getMainHandItem().getItem() instanceof ItemCsgoBox) {
-                for (ItemStack stack : entity.getInventory().items) {
-                    if (Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(stack.getItem())).toString().equals(ItemCsgoBox.getKey(itemMenu))) {
-                        Minecraft.getInstance().setScreen(new CsboxProgressScreen());
-                        Networking.INSTANCE.sendToServer(new PacketCsgoProgress(2, ItemCsgoBox.getKey(itemMenu)));
-                    }
-                }
+            if (player.getMainHandItem().getItem() instanceof ItemCsgoBox) {
+                Minecraft.getInstance().setScreen(new CsboxProgressScreen());
+                Networking.INSTANCE.sendToServer(new PacketCsgoProgress(2));
             }
         });
         this.addRenderableWidget(imagebutton_open_box);

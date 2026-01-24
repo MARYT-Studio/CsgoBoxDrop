@@ -1,13 +1,10 @@
 package com.reclizer.csgobox.event;
 
-import com.reclizer.csgobox.CsgoBox;
+import com.reclizer.csgobox.CsgoBoxDrop;
 
 
 import com.reclizer.csgobox.item.ItemCsgoBox;
 import com.reclizer.csgobox.item.ModItems;
-import com.reclizer.csgobox.utils.random_pickers.RandomBladePicker;
-import com.reclizer.csgobox.utils.random_pickers.RandomCurioPicker;
-import com.reclizer.csgobox.utils.random_pickers.RandomFoodPicker;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -30,9 +27,11 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Random;
 
-import static com.reclizer.csgobox.utils.ItemNBT.getStacksData;
+import static com.reclizer.csgobox.utils.random_pickers.RandomBladePicker.randomBladeData;
+import static com.reclizer.csgobox.utils.random_pickers.RandomCurioPicker.randomCurioData;
+import static com.reclizer.csgobox.utils.random_pickers.RandomFoodPicker.randomFoodData;
 
-@Mod.EventBusSubscriber(modid = CsgoBox.MOD_ID)
+@Mod.EventBusSubscriber(modid = CsgoBoxDrop.MOD_ID)
 public class ModEvents {
 
     @SubscribeEvent
@@ -116,7 +115,7 @@ public class ModEvents {
             ItemStack item = itemEntity.getItem();
             int count = item.getCount();
             if (bossFlag && count > 5) item.setCount((int) Math.floor(1 + new Random().nextFloat(4f)));
-            String itemData = getStacksData(item);
+            String itemData = item.save(new CompoundTag()).toString();
             grade1Tag.add(StringTag.valueOf(itemData));
         }
 
@@ -124,63 +123,58 @@ public class ModEvents {
         int base = bossFlag ? 2: 1;
 
         // 击杀Boss的保底会变为2个，否则保底1个结束后都需要概率roll
-        // grade2Tag固定用来放食物
+        // 食物固定放grade1Tag，避免怪物无掉落物时出现空位
         for(int i = 0; i < rewardCount; i++) {
             if (i < base) {
-                ItemStack food = RandomFoodPicker.randomFoodStack(random);
-                String data = getStacksData(food);
-                grade2Tag.add(StringTag.valueOf(data));
+                grade1Tag.add(StringTag.valueOf(randomFoodData(random)));
             } else {
                 if (random.nextFloat() < probability) {
-                    ItemStack food = RandomFoodPicker.randomFoodStack(random);
-                    String data = getStacksData(food);
-                    grade2Tag.add(StringTag.valueOf(data));
+                    grade1Tag.add(StringTag.valueOf(randomFoodData(random)));
                 }
             }
 
         }
 
-        // grade3：如果打了boss放的就是饰品，否则放的是食物
+        // grade2：如果打了boss放的就是饰品，否则放的是食物
         for(int i = 0; i < rewardCount; i++) {
             if (i < base) {
-                ItemStack reward = bossFlag? RandomCurioPicker.randomCurioStack(random) : RandomFoodPicker.randomFoodStack(random);
-                String data = getStacksData(reward);
-                grade3Tag.add(StringTag.valueOf(data));
+                grade2Tag.add(StringTag.valueOf(bossFlag? randomCurioData(random) : randomFoodData(random)));
             } else {
                 if (random.nextFloat() < probability) {
-                    ItemStack reward = bossFlag? RandomCurioPicker.randomCurioStack(random) : RandomFoodPicker.randomFoodStack(random);
-                    String data = getStacksData(reward);
-                    grade3Tag.add(StringTag.valueOf(data));
+                    grade2Tag.add(StringTag.valueOf(bossFlag? randomCurioData(random) : randomFoodData(random)));
                 }
             }
         }
 
-        // grade4：固定是饰品
+        // grade3：固定是饰品
         for(int i = 0; i < rewardCount; i++) {
             if (i < base) {
-                ItemStack reward = RandomCurioPicker.randomCurioStack(random);
-                String data = getStacksData(reward);
-                grade4Tag.add(StringTag.valueOf(data));
+                grade3Tag.add(StringTag.valueOf(randomCurioData(random)));
             } else {
                 if (random.nextFloat() < probability) {
-                    ItemStack reward = RandomCurioPicker.randomCurioStack(random);
-                    String data = getStacksData(reward);
-                    grade4Tag.add(StringTag.valueOf(data));
+                    grade3Tag.add(StringTag.valueOf(randomCurioData(random)));
                 }
             }
         }
 
-        // grade5：固定是拔刀剑
+        // grade4：固定是拔刀剑
         for(int i = 0; i < rewardCount; i++) {
             if (i < base) {
-                ItemStack reward = RandomBladePicker.randomBladeStack(random, level);
-                String data = getStacksData(reward);
-                grade5Tag.add(StringTag.valueOf(data));
+                grade4Tag.add(StringTag.valueOf(randomBladeData(random, level)));
             } else {
                 if (random.nextFloat() < probability) {
-                    ItemStack reward = RandomBladePicker.randomBladeStack(random, level);
-                    String data = getStacksData(reward);
-                    grade5Tag.add(StringTag.valueOf(data));
+                    grade4Tag.add(StringTag.valueOf(randomBladeData(random, level)));
+                }
+            }
+        }
+
+        // grade5：该物品是不可见的传说物品，如果打了boss就是拔刀剑，否则是饰品
+        for(int i = 0; i < rewardCount; i++) {
+            if (i < base) {
+                grade5Tag.add(StringTag.valueOf(bossFlag? randomBladeData(random, level) : randomCurioData(random)));
+            } else {
+                if (random.nextFloat() < probability) {
+                    grade5Tag.add(StringTag.valueOf(bossFlag? randomBladeData(random, level) : randomCurioData(random)));
                 }
             }
         }
@@ -190,7 +184,7 @@ public class ModEvents {
         tag.put("grade3", grade3Tag);
         tag.put("grade4", grade4Tag);
         tag.put("grade5", grade5Tag);
-        if (CsgoBox.DEBUG) CsgoBox.LOGGER.debug(tag.toString());
+        if (CsgoBoxDrop.DEBUG) CsgoBoxDrop.LOGGER.debug(tag.toString());
         return tag;
     }
 
@@ -201,7 +195,7 @@ public class ModEvents {
         if (boxInfo.grade3.isEmpty()) result += 4;
         if (boxInfo.grade4.isEmpty()) result += 8;
         if (boxInfo.grade5.isEmpty()) result += 16;
-        if (result > 0 && CsgoBox.DEBUG) CsgoBox.LOGGER.error("Player {} got an invalid box, empty grades are: {}",player.getName().getString(), Integer.toBinaryString(result));
+        if (result > 0 && CsgoBoxDrop.DEBUG) CsgoBoxDrop.LOGGER.error("Player {} got an invalid box, empty grades are: {}",player.getName().getString(), Integer.toBinaryString(result));
         return result > 0;
     }
 

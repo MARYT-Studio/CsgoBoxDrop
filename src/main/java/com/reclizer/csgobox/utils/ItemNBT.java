@@ -1,14 +1,18 @@
 package com.reclizer.csgobox.utils;
 
 
-import com.google.gson.*;
-import com.mojang.serialization.JsonOps;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.reclizer.csgobox.CsgoBoxDrop;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Objects;
 
 public class ItemNBT {
     public static ItemStack getStacks(String itemData) {
-        return Objects.requireNonNull(ItemStack.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseString(itemData)).result().orElse(null)).getFirst();
+        try {
+            return ItemStack.of(TagParser.parseTag(itemData));
+        } catch (CommandSyntaxException e) {
+            CsgoBoxDrop.LOGGER.error("ItemStack parsing error.\nError item data:\n{}\n{}", itemData, e);
+            return ItemStack.EMPTY;
+        }
     }
 }

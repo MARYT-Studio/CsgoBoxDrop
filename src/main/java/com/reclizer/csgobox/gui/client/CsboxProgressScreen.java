@@ -124,7 +124,7 @@ public class CsboxProgressScreen extends Screen {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        //guiGraphics.blit(new ResourceLocation("CsgoBox:textures/screens/csgo_background.png"), 0, 0, 0, 0, this.width, this.height, this.width, this.height);
+        //guiGraphics.blit(new ResourceLocation("CsgoBoxDrop:textures/screens/csgo_background.png"), 0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
 
         BlurHandler.updateShader(false);

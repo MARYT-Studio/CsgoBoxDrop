@@ -1,6 +1,6 @@
 package com.reclizer.csgobox.capability.csbox;
 
-import com.reclizer.csgobox.CsgoBox;
+import com.reclizer.csgobox.CsgoBoxDrop;
 import com.reclizer.csgobox.capability.ModCapability;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class CsboxCapAttacher {
 
     private static class CsboxCapProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-        public static final ResourceLocation IDENTIFIER = new ResourceLocation(CsgoBox.MOD_ID, "csbox");
+        public static final ResourceLocation IDENTIFIER = new ResourceLocation(CsgoBoxDrop.MOD_ID, "csbox");
 
         private final ICsboxCap backend = new CsboxCap(null);
         private final LazyOptional<ICsboxCap> optionalData = LazyOptional.of(() -> backend);

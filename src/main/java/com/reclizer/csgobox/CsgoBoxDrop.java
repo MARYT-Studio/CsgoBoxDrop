@@ -1,24 +1,17 @@
 package com.reclizer.csgobox;
 
 import com.mojang.logging.LogUtils;
-import com.reclizer.csgobox.gui.RecModScreens;
+import com.reclizer.csgobox.event.init.InitEvent;
 import com.reclizer.csgobox.sounds.ModSounds;
 import com.reclizer.csgobox.config.CsgoBoxManage;
-import com.reclizer.csgobox.gui.RecModMenus;
 import com.reclizer.csgobox.item.ModItems;
 import com.reclizer.csgobox.packet.Networking;
 
-import com.reclizer.csgobox.utils.random_pickers.RandomBladePicker;
 import com.reclizer.csgobox.utils.random_pickers.RandomCurioPicker;
 import com.reclizer.csgobox.utils.random_pickers.RandomFoodPicker;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -30,8 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod(CsgoBox.MOD_ID)
-public class CsgoBox {
+@Mod(CsgoBoxDrop.MOD_ID)
+public class CsgoBoxDrop {
 
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "csgobox";
@@ -39,15 +32,15 @@ public class CsgoBox {
     // 仅在开发环境中为 true，构建发布前须改为 false
     public static final boolean DEBUG = true;
 
-    public CsgoBox() {
+    public CsgoBoxDrop() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         ModSounds.SOUNDS.register(modEventBus);
-        RecModMenus.register(modEventBus);
         ModItems.register(modEventBus);
         ModItems.registerTab(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(RandomCurioPicker.class);
+        MinecraftForge.EVENT_BUS.register(InitEvent.class);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -119,9 +112,7 @@ public class CsgoBox {
                     writer.write(content);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
 
         // 随机查找表缓存
         event.enqueueWork(RandomFoodPicker::initFoodCache);
@@ -129,30 +120,8 @@ public class CsgoBox {
         event.enqueueWork(() -> {
             try {
                 CsgoBoxManage.loadConfigBox();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException ignored) {}
         });
         Networking.registerMessages();
-    }
-
-    @SubscribeEvent
-    public static void onServerStarting(ServerStartingEvent event) {
-        RandomBladePicker.initBladeCache(event.getServer().overworld());
-    }
-
-    @SubscribeEvent
-    public static void onServerStarted(ServerStartedEvent event) {
-        RandomBladePicker.initBladeCache(event.getServer().overworld());
-    }
-
-    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents {
-
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
-            event.enqueueWork(RecModScreens::clientLoad);
-        }
     }
 }

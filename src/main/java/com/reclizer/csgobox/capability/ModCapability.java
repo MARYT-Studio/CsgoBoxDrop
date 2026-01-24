@@ -1,6 +1,6 @@
 package com.reclizer.csgobox.capability;
 
-import com.reclizer.csgobox.CsgoBox;
+import com.reclizer.csgobox.CsgoBoxDrop;
 import com.reclizer.csgobox.capability.csbox.CsboxCapAttacher;
 import com.reclizer.csgobox.capability.csbox.ICsboxCap;
 import net.minecraft.world.entity.Entity;
@@ -35,7 +35,7 @@ public class ModCapability {
 
 
     @SuppressWarnings("unused")
-    @Mod.EventBusSubscriber(modid = CsgoBox.MOD_ID)
+    @Mod.EventBusSubscriber(modid = CsgoBoxDrop.MOD_ID)
     public static class EventHandler {
 
         @SubscribeEvent
