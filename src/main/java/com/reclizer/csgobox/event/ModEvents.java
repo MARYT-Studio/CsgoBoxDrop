@@ -111,20 +111,13 @@ public class ModEvents {
         ListTag grade4Tag = new ListTag();
         ListTag grade5Tag = new ListTag();
 
-        // 将怪物的掉落物成倍放入箱子
+        // 将怪物的掉落物成倍放入grade1
         for (ItemEntity itemEntity: drops.stream().toList()) {
             ItemStack item = itemEntity.getItem();
             int count = item.getCount();
             if (bossFlag && count > 5) item.setCount((int) Math.floor(1 + new Random().nextFloat(4f)));
             String itemData = getStacksData(item);
-            switch (item.getRarity().ordinal()) {
-                case 0: grade1Tag.add(StringTag.valueOf(itemData));
-                case 1: grade2Tag.add(StringTag.valueOf(itemData));
-                case 2: grade3Tag.add(StringTag.valueOf(itemData));
-                case 3: grade4Tag.add(StringTag.valueOf(itemData));
-                case 4: grade5Tag.add(StringTag.valueOf(itemData));
-                default: grade1Tag.add(StringTag.valueOf(itemData));
-            }
+            grade1Tag.add(StringTag.valueOf(itemData));
         }
 
         int rewardCount = random.nextIntBetweenInclusive(1, 3);
