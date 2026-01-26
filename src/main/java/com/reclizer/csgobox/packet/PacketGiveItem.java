@@ -1,5 +1,6 @@
 package com.reclizer.csgobox.packet;
 
+import com.reclizer.csgobox.CsgoBoxDrop;
 import com.reclizer.csgobox.item.ItemCsgoBox;
 import com.reclizer.csgobox.utils.RandomItem;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,10 +32,15 @@ public class PacketGiveItem {
 
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> Optional.ofNullable(ctx.get().getSender()).ifPresent(player -> {
+
+            CsgoBoxDrop.LOGGER.info("player side is {}", player.level().isClientSide()? "client": "server");
+
             var box = player.getMainHandItem();
             if (!(box.getItem() instanceof ItemCsgoBox boxItem)) {
+                CsgoBoxDrop.LOGGER.error("After the message sent, player main hand stack {} is still not an ItemCsgoBox, this could be a bug", box);
                 return;
             }
+
             var itemList = boxItem.getItemGroup(box);
             var rng = new Random(seed);
             ITEM_BUFFER.clear();
@@ -49,6 +55,7 @@ public class PacketGiveItem {
             ITEM_BUFFER.clear();
 
             if (giveItem != null) {
+                CsgoBoxDrop.LOGGER.info("giveItem is {}", giveItem);
                 var inventory = player.getInventory();
                 int emptySlot = -1;
                 for (int i = 0; i < 36; i++) {
@@ -58,11 +65,15 @@ public class PacketGiveItem {
                     }
                 }
                 if (emptySlot != -1) {
-                    player.getInventory().add(giveItem);
+                    if (player.getInventory().add(giveItem)) {
+                        box.shrink(1);
+                    } else CsgoBoxDrop.LOGGER.error("failed to give item {} to player {}", giveItem, player);
                 } else {
-                    player.drop(giveItem, true, false);
+                    if (player.drop(giveItem, true, false).getItem().is(giveItem.getItem())) {
+                        box.shrink(1);
+                    } else CsgoBoxDrop.LOGGER.error("failed to drop item {} to player {}", giveItem, player);
                 }
-            }
+            } else CsgoBoxDrop.LOGGER.error("failed to give item to player {} because giveItem is null", player);
         }));
         ctx.get().setPacketHandled(true);
     }

@@ -344,8 +344,8 @@ public class CsboxScreen extends Screen {
         super.init();
         imagebutton_open_box = new ImageButton(this.width * 67 / 100, this.height * 94 / 100, this.width * 4 / 100, this.height * 5 / 100, 0, 0, 64, new ResourceLocation("csgobox:textures/screens/atlas/open_box.png"), 82, 128, e -> {
             if (player.getMainHandItem().getItem() instanceof ItemCsgoBox) {
-                Minecraft.getInstance().setScreen(new CsboxProgressScreen());
                 Networking.INSTANCE.sendToServer(new PacketCsgoProgress(2));
+                Minecraft.getInstance().setScreen(new CsboxProgressScreen());
             }
         });
         this.addRenderableWidget(imagebutton_open_box);
