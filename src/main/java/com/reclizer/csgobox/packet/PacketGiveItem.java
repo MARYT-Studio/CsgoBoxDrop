@@ -32,9 +32,6 @@ public class PacketGiveItem {
 
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> Optional.ofNullable(ctx.get().getSender()).ifPresent(player -> {
-
-            CsgoBoxDrop.LOGGER.info("player side is {}", player.level().isClientSide()? "client": "server");
-
             var box = player.getMainHandItem();
             if (!(box.getItem() instanceof ItemCsgoBox boxItem)) {
                 CsgoBoxDrop.LOGGER.error("After the message sent, player main hand stack {} is still not an ItemCsgoBox, this could be a bug", box);
@@ -55,7 +52,7 @@ public class PacketGiveItem {
             ITEM_BUFFER.clear();
 
             if (giveItem != null) {
-                CsgoBoxDrop.LOGGER.info("giveItem is {}", giveItem);
+                if (CsgoBoxDrop.DEBUG) CsgoBoxDrop.LOGGER.debug("giveItem is {}", giveItem);
                 var inventory = player.getInventory();
                 int emptySlot = -1;
                 for (int i = 0; i < 36; i++) {

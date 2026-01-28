@@ -30,7 +30,7 @@ public class CsgoBoxDrop {
     public static final String MOD_ID = "csgobox";
     public static final Logger LOGGER = LogUtils.getLogger();
     // 仅在开发环境中为 true，构建发布前须改为 false
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     public CsgoBoxDrop() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

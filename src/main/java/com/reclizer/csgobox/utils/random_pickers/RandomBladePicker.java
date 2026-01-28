@@ -26,6 +26,7 @@ public final class RandomBladePicker {
 
         SLASHBLADES = blades.toArray(ItemStack[]::new);
         CsgoBoxDrop.LOGGER.info("SlashBlade list initialized. {} entries.", SLASHBLADES.length);
+
         if (CsgoBoxDrop.DEBUG) {
             CsgoBoxDrop.LOGGER.debug("SlashBlade list are below:");
             for (ItemStack blade: SLASHBLADES) {
